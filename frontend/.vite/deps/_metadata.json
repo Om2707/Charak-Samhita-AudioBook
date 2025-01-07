@@ -1,0 +1,82 @@
+{
+  "hash": "60283208",
+  "configHash": "1ea5f751",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "982df76f",
+  "optimized": {
+    "@hookform/resolvers/zod": {
+      "src": "../../node_modules/@hookform/resolvers/zod/dist/zod.mjs",
+      "file": "@hookform_resolvers_zod.js",
+      "fileHash": "041604be",
+      "needsInterop": false
+    },
+    "@mui/icons-material/Mic": {
+      "src": "../../node_modules/@mui/icons-material/Mic.js",
+      "file": "@mui_icons-material_Mic.js",
+      "fileHash": "ddd7051d",
+      "needsInterop": true
+    },
+    "@mui/icons-material/Search": {
+      "src": "../../node_modules/@mui/icons-material/Search.js",
+      "file": "@mui_icons-material_Search.js",
+      "fileHash": "2560925a",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "88eaf16a",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "4e5d7e16",
+      "needsInterop": true
+    },
+    "react-hook-form": {
+      "src": "../../node_modules/react-hook-form/dist/index.esm.mjs",
+      "file": "react-hook-form.js",
+      "fileHash": "a27281d8",
+      "needsInterop": false
+    },
+    "react-responsive-carousel": {
+      "src": "../../node_modules/react-responsive-carousel/lib/js/index.js",
+      "file": "react-responsive-carousel.js",
+      "fileHash": "6e0d11b0",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "6525bae5",
+      "needsInterop": false
+    },
+    "zod": {
+      "src": "../../node_modules/zod/lib/index.mjs",
+      "file": "zod.js",
+      "fileHash": "4f1777d6",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-RQUBE2SY": {
+      "file": "chunk-RQUBE2SY.js"
+    },
+    "chunk-DQROLGKX": {
+      "file": "chunk-DQROLGKX.js"
+    },
+    "chunk-Z3BPU7PB": {
+      "file": "chunk-Z3BPU7PB.js"
+    },
+    "chunk-ZIYUGMGG": {
+      "file": "chunk-ZIYUGMGG.js"
+    },
+    "chunk-65KY755N": {
+      "file": "chunk-65KY755N.js"
+    },
+    "chunk-V4OQ3NZ2": {
+      "file": "chunk-V4OQ3NZ2.js"
+    }
+  }
+}

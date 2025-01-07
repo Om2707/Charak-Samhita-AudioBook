@@ -1,0 +1,84 @@
+/* Style the container */
+.audio-player-container {
+  background-color: white;
+  border-radius: 20px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress bar styling */
+.audio-progress-bar {
+  width: 90%;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background-color: #ddd;
+  margin-bottom: 10px;
+}
+
+.audio-progress-bar::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: black;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Controls container */
+.audio-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Control buttons styling */
+.audio-control-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: black;
+  transition: transform 0.2s ease;
+}
+
+.audio-control-btn:hover {
+  transform: scale(1.1);
+}
+
+.play-pause-btn {
+  background-color: black;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Heart icon styling */
+.heart-icon {
+  font-size: 1.5rem;
+  color: black;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.heart-icon:hover {
+  color: red;
+}
+
+/* Optional: purple background behind the player */
+.player-background {
+  background-color: #8a3ab9; /* Purple background */
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 20px;
+}
