@@ -1,15 +1,26 @@
+import { lazy, Suspense } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Chapter from './components/Chapter';
-import ForgotPassword from './components/ForgotPassword';
-import Home from './components/Home';
-import Login from './components/Login';
-import ProtectedRoute from './components/ProtectedRoute';
-import Shlokas from './components/Shlokas';
-import Signup from './components/Signup';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
+const Login = lazy(() => import('./components/Login'));
+const Signup = lazy(() => import('./components/Signup'));
+const Home = lazy(() => import('./components/Home'));
+const Chapter = lazy(() => import('./components/Chapter'));
+const Shlokas = lazy(() => import('./components/Shlokas'));
+const NotFound = lazy(() => import('./components/NotFound')); 
+
+const LoadingSpinner = () => (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-90 z-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+      <p className="mt-4 text-gray-600">Loading...</p>
+    </div>
+  </div>
+);
 
 const AppContent = () => {
-  const { logout } = useAuth();  // Now you can safely use the `useAuth` hook
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -19,35 +30,37 @@ const AppContent = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home onLogout={handleLogout} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/books/:bookId/chapters"
-          element={
-            <ProtectedRoute>
-              <Chapter />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/books/:bookId/chapters/:chapterId/shlokas"
-          element={
-            <ProtectedRoute>
-              <Shlokas />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-      </Routes>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home onLogout={handleLogout} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/books/:bookId/chapters"
+            element={
+              <ProtectedRoute>
+                <Chapter />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/books/:bookId/chapters/:chapterId/shlokas"
+            element={
+              <ProtectedRoute>
+                <Shlokas />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 };
@@ -55,7 +68,7 @@ const AppContent = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <AppContent />  {/* Render the actual app content here */}
+      <AppContent />
     </AuthProvider>
   );
 };

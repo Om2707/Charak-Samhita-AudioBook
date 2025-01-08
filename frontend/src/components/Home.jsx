@@ -8,11 +8,19 @@ function Home() {
   const navigate = useNavigate();
   const { data: books = [], error, isLoading } = useGetBooksQuery();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-xl">Loading...</div>
+    </div>
+  );
 
   if (error) {
     console.error("Error fetching books:", error);
-    return <div>Error fetching books</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl text-red-600">Error fetching books</div>
+      </div>
+    );
   }
 
   const handleBookClick = (bookId) => {
@@ -43,13 +51,17 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Slider />
-      <div className="container mx-auto p-4">
-        <h2 className="text-3xl font-bold mb-3 text-center">Books</h2>
+      <div className="w-full">
+        <Slider />
+      </div>
+      
+      <div className="container mx-auto px-4 py-6 flex-grow">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">List of Sthana</h2>
+        
         <motion.div
-          className="grid m-auto place-items-center gap-4 md:gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4"
+          className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-32 max-w-7xl mx-auto px-2 sm:px-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -57,16 +69,28 @@ function Home() {
           {books.map((book) => (
             <motion.div
               key={book.id}
-              className="relative group shadow-md rounded-lg hover:shadow-2xl transition-shadow duration-500"
+              className="relative group cursor-pointer"
               variants={cardVariants}
               onClick={() => handleBookClick(`${book.id}`)}
             >
-              <motion.img
-                src={book.book_image}
-                alt={book.book_name}
-                className="rounded-lg w-56 h-56 md:w-72 md:h-72 lg:w-[350px] lg:h-[400px] object-cover transform transition-transform ease-out duration-300 group-hover:scale-110"
-                style={{ imageRendering: 'crisp-edges' }}
-              />
+              <div className="rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500">
+                <motion.img
+                  src={book.book_image}
+                  alt={book.book_name}
+                  className="w-full aspect-[3/4] object-cover transform transition-transform duration-300 group-hover:scale-105"
+                  style={{ 
+                    imageRendering: 'crisp-edges',
+                    maxHeight: '400px'
+                  }}
+                />
+              </div>
+              
+              {/* Optional: Add book name overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-end">
+                <p className="text-white text-sm sm:text-base md:text-lg p-2 sm:p-3 w-full text-center">
+                  {book.book_name}
+                </p>
+              </div>
             </motion.div>
           ))}
         </motion.div>

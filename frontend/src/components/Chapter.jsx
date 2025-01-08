@@ -4,59 +4,70 @@ import { useGetChaptersQuery } from "../services/chapterApi";
 import Navbar from "./Navbar";
 
 function Chapter() {
-  const { bookId } = useParams(); 
-  const { data: books = [], book_error, book_isLoading } = useGetBooksQuery(); // Fetch all books
+  const { bookId } = useParams();
+  const { data: books = [], book_error, book_isLoading } = useGetBooksQuery();
   const { data: chapters = [], error, isLoading } = useGetChaptersQuery(bookId);
   const navigate = useNavigate();
 
-  // Find the specific book by its ID
   const book = books.find((book) => book.id === parseInt(bookId));
 
   const handleChapterClick = (chapterId) => {
-    navigate(`/books/${bookId}/chapters/${chapterId}/shlokas`); 
+    navigate(`/books/${bookId}/chapters/${chapterId}/shlokas`);
   };
 
-  if (isLoading || book_isLoading) return <div>Loading...</div>;
+  if (isLoading || book_isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   if (error || book_error) {
     console.error("Error fetching data:", error || book_error);
     return (
-      <div>
-        <h2>Error fetching data</h2>
-        <pre>{JSON.stringify(error || book_error, null, 2)}</pre>
+      <div className="p-4 mx-auto max-w-2xl text-center">
+        <h2 className="text-xl font-bold text-red-600 mb-4">Error fetching data</h2>
+        <pre className="bg-gray-100 p-4 rounded-lg overflow-auto">
+          {JSON.stringify(error || book_error, null, 2)}
+        </pre>
       </div>
     );
   }
 
   return (
-    <div className="bg-ashtangBg bg-no-repeat overflow-hidden bg-cover h-screen w-screen">
+    <div className="min-h-screen bg-no-repeat bg-cover">
       <Navbar />
-      <div className="flex justify-center">
-        <div className="w-11/12 "> {/* Centered container with fixed width */}
-          <div className="w-full h-96">
-            {book && (
-              <img
-                className="w-full h-full rounded-lg mt-5 object-cover"
-                src={book.book_slider}
-                alt="Book Cover"
-              />
-            )}
+      <div className="px-4 mt-1 sm:mt-2">
+        {book && (
+          <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+            <img
+              className="w-full h-full object-contain sm:object-cover"
+              src={book.book_slider}
+              alt="Book Cover"
+              loading="lazy"
+            />
           </div>
-          <div className="mx-auto p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-              {chapters.map((chapter) => (
-                <div
-                  key={chapter.id}
-                  className="bg-white shadow-lg rounded-lg p-4 cursor-pointer"
-                  onClick={() => handleChapterClick(chapter.id)}
-                >
-                  <p className="text-center font-semibold text-lg">
-                    {chapter.chapter_name}
-                  </p>
-                </div>
-              ))}
+        )}
+      </div>
+
+      <div className="container mx-auto px-4 mt-3 sm:mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          {chapters.map((chapter) => (
+            <div
+              key={chapter.id}
+              onClick={() => handleChapterClick(chapter.id)}
+              className="bg-white shadow-lg rounded-lg p-4 cursor-pointer 
+                       transform transition duration-200 hover:scale-105 
+                       hover:shadow-xl border border-gray-100"
+            >
+              <p style={{ fontFamily: "'Tiro Devanagari Sanskrit', serif" }}
+                 className="text-center text-lg md:text-xl 
+                          tracking-wide leading-relaxed">
+                {chapter.chapter_name}
+              </p>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

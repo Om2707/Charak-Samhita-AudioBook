@@ -1,20 +1,99 @@
 {% extends "admin/change_list.html" %}
-
 {% block content %}
-    <h2>Bulk Upload Shlokas</h2>
-    <form method="POST" enctype="multipart/form-data" action="{% url 'admin:upload-shlokas' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="id_excel_file">Upload Excel File:</label>
-            <input type="file" id="id_excel_file" name="excel_file" accept=".xlsx, .xls" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Upload</button>
-    </form>
+<div class="upload-container" style="max-width: 800px; margin: 20px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #2c3e50; font-size: 24px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #eef2f7;">
+        <i class="fas fa-book" style="margin-right: 10px;"></i>Shlokas Upload
+    </h2>
 
+    <div class="upload-section" style="background: #f8fafc; padding: 25px; border-radius: 6px; margin-bottom: 30px;">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'admin:upload-shlokas' %}" class="upload-form">
+            {% csrf_token %}
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label for="id_excel_file" style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 10px;">
+                     <i class="fas fa-file-excel" style="margin-right: 8px;"></i>Upload Excel File
+                </label>
+                <div class="file-upload-wrapper" style="position: relative;">
+                    <input type="file" 
+                           id="id_excel_file" 
+                           name="excel_file" 
+                           accept=".xlsx, .xls" 
+                           required
+                           style="width: 100%; 
+                                  padding: 12px; 
+                                  border: 2px dashed #cbd5e0;
+                                  border-radius: 6px;
+                                  background: white;
+                                  cursor: pointer;">
+                </div>
+                <small style="display: block; margin-top: 8px; color: #718096;">
+                    Accepted formats: .xlsx, .xls
+                </small>
+            </div>
+            
+            <button type="submit" 
+                    style="background: #4299e1;
+                           color: white;
+                           padding: 12px 24px;
+                           border: none;
+                           border-radius: 6px;
+                           font-weight: 500;
+                           cursor: pointer;
+                           transition: background 0.3s ease;">
+                <i class="fas fa-upload" style="margin-right: 8px;"></i>
+                Upload Shlokas
+            </button>
+        </form>
+    </div>
 
-    <h3>Example Format</h3>
-    <p>Download an example Excel format to prepare your upload file.</p>
-    <a href="{% url 'admin:shloka-example-format' %}" class="btn btn-secondary">Download Example Format</a>
+    <div class="example-section" style="background: #ebf4ff; padding: 25px; border-radius: 6px; margin-bottom: 30px;">
+        <h3 style="color: #2d3748; font-size: 18px; margin-bottom: 15px;">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i>Example Format
+        </h3>
+        <p style="color: #4a5568; margin-bottom: 20px;">
+            Download an example Excel format to ensure your upload file meets the required structure.
+        </p>
+        <a href="{% url 'admin:shloka-example-format' %}" 
+           style="display: inline-block;
+                  background: white;
+                  color: #4299e1;
+                  padding: 12px 24px;
+                  border: 2px solid #4299e1;
+                  border-radius: 6px;
+                  text-decoration: none;
+                  font-weight: 500;
+                  transition: all 0.3s ease;">
+            <i class="fas fa-download" style="margin-right: 8px;"></i>
+            Download Example Format
+        </a>
+    </div>
+</div>
 
-    {{ block.super }}
+<style>
+    .upload-container button:hover {
+        background: #3182ce;
+    }
+    
+    .example-section a:hover {
+        background: #4299e1;
+        color: white;
+    }
+    
+    .file-upload-wrapper input[type="file"]:hover {
+        border-color: #4299e1;
+    }
+    
+    @media (max-width: 768px) {
+        .upload-container {
+            margin: 10px;
+            padding: 20px;
+        }
+        
+        .upload-section, 
+        .example-section {
+            padding: 15px;
+        }
+    }
+</style>
+
+{{ block.super }}
 {% endblock %}

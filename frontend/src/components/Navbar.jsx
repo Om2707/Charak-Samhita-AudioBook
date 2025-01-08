@@ -3,20 +3,20 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import Cookies from 'js-cookie';
+import Searchbar from './Searchbar'; // Import the Searchbar component
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [isFocused, setIsFocused] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
   const pageList = [
-    { name: 'Sutrasthana', path: '/sutrasthana' },
+    { name: 'Sutrasthana', path: '/books/2/chapters' },
+    { name: 'Book 1', path: '/books/2/chapters' },
+    { name: 'Book One', path: '/books/2/chapters' },
     { name: 'Sutrasthana Chapter One', path: '/Sutrasthanachapters/ch1' },
     { name: 'Nidanasthana Chapter Two', path: '/Nidanasthanachapters/ch2' },
     { name: 'Nidanasthana', path: '/nidanasthana' },
@@ -63,7 +63,6 @@ const Navbar = () => {
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript.toLowerCase();
       console.log('Voice Input:', transcript);
-      setSearchQuery(transcript);
       performSearch(transcript);
       setIsListening(false);
     };
@@ -134,61 +133,8 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="flex items-center w-full md:w-1/2 lg:w-1/3 relative font-Tirodeva">
-            <div className="flex items-center bg-white rounded-full px-5 py-2 flex-grow">
-              <i className="fas fa-search text-black text-xl lg:text-2xl mr-2"></i>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="bg-transparent focus:outline-none text-black text-base lg:text-xl w-full"
-                value={searchQuery}
-                onFocus={() => {
-                  setIsFocused(true);
-                  performSearch(searchQuery);
-                }}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  performSearch(e.target.value);
-                }}
-                onBlur={() => setTimeout(() => setIsFocused(false), 100)}
-              />
-              <i
-                className={`fas fa-microphone text-black text-xl lg:text-2xl ${isListening ? 'text-red-500' : ''} md:hidden cursor-pointer`}
-                onClick={startListening}
-              ></i>
-            </div>
-            <div
-              className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md ml-2 cursor-pointer"
-              onClick={startListening}
-            >
-              <i className={`fas fa-microphone text-black text-xl ${isListening ? 'text-red-500' : ''}`}></i>
-            </div>
-
-            {isFocused && (
-              <ul
-                className={`absolute left-0 lg:w-[450px] md:w-80 bg-white text-black border rounded-md z-10 transition-transform ease-in-out duration-300`}
-                style={{
-                  top: 'calc(100% + 8px)',
-                  maxHeight: '300px',
-                  overflow: 'hidden',
-                }}
-              >
-                {suggestions.slice(0, 7).length > 0 ? (
-                  suggestions.slice(0, 7).map((suggestion) => (
-                    <li
-                      key={suggestion.path}
-                      className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                      onClick={() => handleSuggestionClick(suggestion.path)}
-                    >
-                      {suggestion.name}
-                    </li>
-                  ))
-                ) : (
-                  <li className="cursor-default px-4 py-2 text-gray-500">No results found</li>
-                )}
-              </ul>
-            )}
-          </div>
+          {/* Replace the search bar with Searchbar component */}
+          <Searchbar />
 
           <div className="hidden md:block relative">
             <div
@@ -223,7 +169,7 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Rest of your existing sidebar code */}
+      {/* Sidebar */}
       <div
         id="sidebar"
         className={`fixed top-0 left-0 h-full w-64 md:w-72 bg-blue-500 text-white transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} z-50 ease-in-out duration-300`}
@@ -266,15 +212,7 @@ const Navbar = () => {
               <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/about')}>About Us</button>
             </li>
             <li className="py-2 sm:py-1">
-              <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/contact')}>Contact Us</button>
-            </li>
-            <li className="py-2 sm:py-1">
-              <button
-                className="text-lg sm:text-sm text-red-200 hover:text-red-100"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+              <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/contact')}>Contact</button>
             </li>
           </ul>
         </div>

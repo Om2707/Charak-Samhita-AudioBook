@@ -19,9 +19,9 @@ import os
 from django.conf import settings
 
 
-admin.site.site_header = "e-Sharir Admin-Panel"
-admin.site.site_title = "e-Sharir"
-admin.site.index_title = "Welcome to e-Sharir Book"
+admin.site.site_header = "Charak Samhita Admin"
+admin.site.site_title = "Charak Samhita"
+admin.site.index_title = "Welcome to Charak Samhita Book"
 
 
 class ShlokaResource(resources.ModelResource):
