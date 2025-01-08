@@ -1,6 +1,8 @@
+// SearchBar.jsx
 import { useState, useEffect, useRef } from 'react';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
+import { redirectionKeywords } from './keywords';
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -9,28 +11,6 @@ const SearchBar = () => {
   const [isFocused, setIsFocused] = useState(false);
   const searchContainerRef = useRef(null);
   const navigate = useNavigate();
-
-  // Keywords and corresponding paths with icons
-  const redirectionKeywords = [
-    { name: 'Sutrasthana', path: '/books/2/chapters', icon: 'fa-book' },
-    { name: 'Book 1', path: '/books/2/chapters', icon: 'fa-book' },
-    { name: 'Book One', path: '/books/2/chapters', icon: 'fa-book' },
-    { name: 'Sutrasthana Chapter One', path: '/Sutrasthanachapters/ch1', icon: 'fa-bookmark' },
-    { name: 'Nidanasthana Chapter Two', path: '/Nidanasthanachapters/ch2', icon: 'fa-bookmark' },
-    { name: 'Nidanasthana', path: '/nidanasthana', icon: 'fa-book' },
-    { name: 'Vimanasthana', path: '/vimanasthana', icon: 'fa-book' },
-    { name: 'Shareerasthana', path: '/shareerasthana', icon: 'fa-book' },
-    { name: 'Indriyasthana', path: '/indriyasthana', icon: 'fa-book' },
-    { name: 'Chikitsasthana', path: '/chikitsasthana', icon: 'fa-book' },
-    { name: 'Kalpasthana', path: '/kalpasthana', icon: 'fa-book' },
-    { name: 'Siddhisthana', path: '/siddhisthana', icon: 'fa-book' },
-    { name: 'Deerghanjiviteeya Adhyaya', path: '/sutrasthana/chapter1', icon: 'fa-bookmark' },
-    { name: 'Apamarga Tanduliya Adhyaya', path: '/sutrasthana/chapter2', icon: 'fa-bookmark' },
-    { name: 'Aragvadhiya Adhyaya', path: '/sutrasthana/chapter3', icon: 'fa-bookmark' },
-    { name: 'Shadvirechanashatashritiya Adhyaya', path: '/sutrasthana/chapter4', icon: 'fa-bookmark' },
-    { name: 'Matrashiteeya Adhyaya', path: '/sutrasthana/chapter5', icon: 'fa-bookmark' },
-    { name: 'Tasyashiteeya Adhyaya', path: '/sutrasthana/chapter6', icon: 'fa-bookmark' },
-  ];
 
   // Initialize Fuse.js with custom options for better fuzzy search
   const fuseOptions = {
@@ -142,7 +122,7 @@ const SearchBar = () => {
   return (
     <div ref={searchContainerRef} className="relative w-full md:w-1/2 lg:w-1/3">
       <div className="flex items-center bg-white rounded-full px-5 py-2">
-        <i className="fas fa-search text-black text-xl lg:text-2xl mr-2"></i>
+        <i className="fas fa-search text-gray-500 text-xl lg:text-2xl mr-2"></i>
         <input
           type="text"
           placeholder="Search..."
@@ -152,7 +132,7 @@ const SearchBar = () => {
           onFocus={() => setIsFocused(true)}
         />
         <button
-          className={`focus:outline-none ${isListening ? 'text-red-500' : 'text-black'}`}
+          className={`focus:outline-none ${isListening ? 'text-red-500' : 'text-gray-500'}`}
           onClick={startListening}
         >
           <i className="fas fa-microphone text-xl lg:text-2xl"></i>
@@ -160,27 +140,26 @@ const SearchBar = () => {
       </div>
 
       {/* Suggestions dropdown */}
-      {isFocused && suggestions.length > 0 && (
+      {isFocused && (
         <div className="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto">
-          {suggestions.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center px-4 py-3 hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleSuggestionClick(item.path)}
-            >
-              <i className={`fas ${item.icon} text-black mr-3`}></i>
-              <span className="text-black">{item.name}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* No results message */}
-      {isFocused && searchQuery && suggestions.length === 0 && (
-        <div className="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50">
-          <div className="px-4 py-3 text-black">
-            No results found
-          </div>
+          {suggestions.length > 0 ? (
+            suggestions.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center px-4 py-3 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleSuggestionClick(item.path)}
+              >
+                <i className={`fas ${item.icon} text-gray-500 mr-3`}></i>
+                <span className="text-gray-800">{item.name}</span>
+              </div>
+            ))
+          ) : (
+            searchQuery && (
+              <div className="px-4 py-3 text-gray-500">
+                No results found
+              </div>
+            )
+          )}
         </div>
       )}
     </div>

@@ -1,0 +1,21 @@
+// keywords.js
+export const redirectionKeywords = [
+    { name: 'Sutrasthana', path: '/books/2/chapters', icon: 'fa-book' },
+    { name: 'Book 1', path: '/books/2/chapters', icon: 'fa-book' },
+    { name: 'Book One', path: '/books/2/chapters', icon: 'fa-book' },
+    { name: 'Sutrasthana Chapter One', path: '/Sutrasthanachapters/ch1', icon: 'fa-bookmark' },
+    { name: 'Nidanasthana Chapter Two', path: '/Nidanasthanachapters/ch2', icon: 'fa-bookmark' },
+    { name: 'Nidanasthana', path: '/nidanasthana', icon: 'fa-book' },
+    { name: 'Vimanasthana', path: '/vimanasthana', icon: 'fa-book' },
+    { name: 'Shareerasthana', path: '/shareerasthana', icon: 'fa-book' },
+    { name: 'Indriyasthana', path: '/indriyasthana', icon: 'fa-book' },
+    { name: 'Chikitsasthana', path: '/chikitsasthana', icon: 'fa-book' },
+    { name: 'Kalpasthana', path: '/kalpasthana', icon: 'fa-book' },
+    { name: 'Siddhisthana', path: '/siddhisthana', icon: 'fa-book' },
+    { name: 'Deerghanjiviteeya Adhyaya', path: '/sutrasthana/chapter1', icon: 'fa-bookmark' },
+    { name: 'Apamarga Tanduliya Adhyaya', path: '/sutrasthana/chapter2', icon: 'fa-bookmark' },
+    { name: 'Aragvadhiya Adhyaya', path: '/sutrasthana/chapter3', icon: 'fa-bookmark' },
+    { name: 'Shadvirechanashatashritiya Adhyaya', path: '/sutrasthana/chapter4', icon: 'fa-bookmark' },
+    { name: 'Matrashiteeya Adhyaya', path: '/sutrasthana/chapter5', icon: 'fa-bookmark' },
+    { name: 'Tasyashiteeya Adhyaya', path: '/sutrasthana/chapter6', icon: 'fa-bookmark' },
+  ];

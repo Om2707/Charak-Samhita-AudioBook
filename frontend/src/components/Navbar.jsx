@@ -1,38 +1,17 @@
+// Navbar.jsx
 import { useState, useEffect } from 'react';
-import '@fortawesome/fontawesome-free/css/all.min.css'; 
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Link, useNavigate } from 'react-router-dom';
-import Fuse from 'fuse.js';
 import Cookies from 'js-cookie';
-import Searchbar from './Searchbar'; // Import the Searchbar component
+import Searchbar from './Searchbar';
+import { redirectionKeywords } from './keywords';
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
-
-  const pageList = [
-    { name: 'Sutrasthana', path: '/books/2/chapters' },
-    { name: 'Book 1', path: '/books/2/chapters' },
-    { name: 'Book One', path: '/books/2/chapters' },
-    { name: 'Sutrasthana Chapter One', path: '/Sutrasthanachapters/ch1' },
-    { name: 'Nidanasthana Chapter Two', path: '/Nidanasthanachapters/ch2' },
-    { name: 'Nidanasthana', path: '/nidanasthana' },
-    { name: 'Vimanasthana', path: '/vimanasthana' },
-    { name: 'Shareerasthana', path: '/shareerasthana' },
-    { name: 'Indriyasthana', path: '/indriyasthana' },
-    { name: 'Chikitsasthana', path: '/chikitsasthana' },
-    { name: 'Kalpasthana', path: '/kalpasthana' },
-    { name: 'Siddhisthana', path: '/siddhisthana' },
-    { name: 'Deerghanjiviteeya Adhyaya', path: '/sutrasthana/chapter1' },
-    { name: 'Apamarga Tanduliya Adhyaya', path: '/sutrasthana/chapter2' },
-    { name: 'Aragvadhiya Adhyaya', path: '/sutrasthana/chapter3' },
-    { name: 'Shadvirechanashatashritiya Adhyaya', path: '/sutrasthana/chapter4' },
-    { name: 'Matrashiteeya Adhyaya', path: '/sutrasthana/chapter5' },
-    { name: 'Tasyashiteeya Adhyaya', path: '/sutrasthana/chapter6' },
-  ];
 
   // Check if user is authenticated
   useEffect(() => {
@@ -46,53 +25,6 @@ const Navbar = () => {
     Cookies.remove('session');
     Cookies.remove('token');
     navigate('/');
-  };
-
-  // Rest of your existing functions
-  const fuse = new Fuse(pageList, { keys: ['name'], threshold: 0.3 });
-
-  const startListening = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      console.log('Voice recognition started');
-    };
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript.toLowerCase();
-      console.log('Voice Input:', transcript);
-      performSearch(transcript);
-      setIsListening(false);
-    };
-
-    recognition.onerror = () => {
-      console.error('Error during voice recognition');
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      console.log('Voice recognition ended');
-    };
-
-    recognition.start();
-  };
-
-  const performSearch = (query) => {
-    if (query.trim() !== '') {
-      const result = fuse.search(query);
-      setSuggestions(result.map((res) => res.item));
-    } else {
-      setSuggestions(pageList);
-    }
-  };
-
-  const handleSuggestionClick = (path) => {
-    setSearchQuery('');
-    setSuggestions([]);
-    navigate(path);
   };
 
   useEffect(() => {
@@ -133,7 +65,6 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Replace the search bar with Searchbar component */}
           <Searchbar />
 
           <div className="hidden md:block relative">
@@ -151,7 +82,7 @@ const Navbar = () => {
               >
                 <button
                   onClick={handleLogout}
-                  className="block w-full px-4 py-3  text-gray-800 hover:bg-red-500 hover:text-white transition-colors duration-200 ease-in-out font-medium text-sm"
+                  className="block w-full px-4 py-3 text-gray-800 hover:bg-red-500 hover:text-white transition-colors duration-200 ease-in-out font-medium text-sm"
                 >
                   Logout
                 </button>
@@ -194,7 +125,7 @@ const Navbar = () => {
               </div>
               {isMobileDropdownOpen && (
                 <ul id="mobileDropdown" className="ml-4 mt-2 space-y-1">
-                  {pageList.slice(0, 8).map((item) => (
+                  {redirectionKeywords.slice(0, 8).map((item) => (
                     <li key={item.path} className="py-2 sm:py-1">
                       <Link
                         to={item.path}
