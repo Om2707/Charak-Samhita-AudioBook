@@ -1,83 +1,103 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
 
-const SearchBar = ({ pageList }) => {
+const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isListening, setIsListening] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const searchContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  // Keywords and corresponding paths
+  // Keywords and corresponding paths with icons
   const redirectionKeywords = [
-    { name: 'Sutrasthana', path: '/books/2/chapters' },
-    { name: 'Book 1', path: '/books/2/chapters' },
-    { name: 'Book One', path: '/books/2/chapters' },
-    { name: 'Sutrasthana Chapter One', path: '/Sutrasthanachapters/ch1' },
-    { name: 'Nidanasthana Chapter Two', path: '/Nidanasthanachapters/ch2' },
-    { name: 'Nidanasthana', path: '/nidanasthana' },
-    { name: 'Vimanasthana', path: '/vimanasthana' },
-    { name: 'Shareerasthana', path: '/shareerasthana' },
-    { name: 'Indriyasthana', path: '/indriyasthana' },
-    { name: 'Chikitsasthana', path: '/chikitsasthana' },
-    { name: 'Kalpasthana', path: '/kalpasthana' },
-    { name: 'Siddhisthana', path: '/siddhisthana' },
-    { name: 'Deerghanjiviteeya Adhyaya', path: '/sutrasthana/chapter1' },
-    { name: 'Apamarga Tanduliya Adhyaya', path: '/sutrasthana/chapter2' },
-    { name: 'Aragvadhiya Adhyaya', path: '/sutrasthana/chapter3' },
-    { name: 'Shadvirechanashatashritiya Adhyaya', path: '/sutrasthana/chapter4' },
-    { name: 'Matrashiteeya Adhyaya', path: '/sutrasthana/chapter5' },
-    { name: 'Tasyashiteeya Adhyaya', path: '/sutrasthana/chapter6' },
+    { name: 'Sutrasthana', path: '/books/2/chapters', icon: 'fa-book' },
+    { name: 'Book 1', path: '/books/2/chapters', icon: 'fa-book' },
+    { name: 'Book One', path: '/books/2/chapters', icon: 'fa-book' },
+    { name: 'Sutrasthana Chapter One', path: '/Sutrasthanachapters/ch1', icon: 'fa-bookmark' },
+    { name: 'Nidanasthana Chapter Two', path: '/Nidanasthanachapters/ch2', icon: 'fa-bookmark' },
+    { name: 'Nidanasthana', path: '/nidanasthana', icon: 'fa-book' },
+    { name: 'Vimanasthana', path: '/vimanasthana', icon: 'fa-book' },
+    { name: 'Shareerasthana', path: '/shareerasthana', icon: 'fa-book' },
+    { name: 'Indriyasthana', path: '/indriyasthana', icon: 'fa-book' },
+    { name: 'Chikitsasthana', path: '/chikitsasthana', icon: 'fa-book' },
+    { name: 'Kalpasthana', path: '/kalpasthana', icon: 'fa-book' },
+    { name: 'Siddhisthana', path: '/siddhisthana', icon: 'fa-book' },
+    { name: 'Deerghanjiviteeya Adhyaya', path: '/sutrasthana/chapter1', icon: 'fa-bookmark' },
+    { name: 'Apamarga Tanduliya Adhyaya', path: '/sutrasthana/chapter2', icon: 'fa-bookmark' },
+    { name: 'Aragvadhiya Adhyaya', path: '/sutrasthana/chapter3', icon: 'fa-bookmark' },
+    { name: 'Shadvirechanashatashritiya Adhyaya', path: '/sutrasthana/chapter4', icon: 'fa-bookmark' },
+    { name: 'Matrashiteeya Adhyaya', path: '/sutrasthana/chapter5', icon: 'fa-bookmark' },
+    { name: 'Tasyashiteeya Adhyaya', path: '/sutrasthana/chapter6', icon: 'fa-bookmark' },
   ];
 
-  // Initialize Fuse.js for fuzzy search
-  const fuse = new Fuse(redirectionKeywords, { keys: ['name'], threshold: 0.3 });
+  // Initialize Fuse.js with custom options for better fuzzy search
+  const fuseOptions = {
+    keys: ['name'],
+    threshold: 0.4, // Lower threshold for stricter matching
+    distance: 100, // Increased distance for better partial matches
+    minMatchCharLength: 2 // Minimum characters that must match
+  };
+  
+  const fuse = new Fuse(redirectionKeywords, fuseOptions);
 
-  // Set up SpeechRecognition for voice search
+  // Initialize speech recognition
   useEffect(() => {
-    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      alert("Sorry, your browser doesn't support speech recognition.");
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.error("Speech recognition not supported");
       return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
 
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
+    recognition.onstart = () => {
+      setIsListening(true);
+      setSearchQuery('Listening...');
+    };
 
     recognition.onresult = (event) => {
-      const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
+      const transcript = event.results[0][0].transcript;
       setSearchQuery(transcript);
-      handleVoiceSearch(transcript);  // Handle redirection on voice input
+      handleVoiceSearch(transcript);
     };
 
     recognition.onerror = (event) => {
-      console.error("Error occurred in recognition: ", event.error);
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+      setSearchQuery('');
+    };
+
+    recognition.onend = () => {
       setIsListening(false);
     };
 
-    // Store the recognition object globally
     window.recognition = recognition;
   }, []);
 
-  // Start listening when the mic button is clicked
-  const startListening = () => {
-    if (window.recognition && !isListening) {
-      window.recognition.start();
-    }
-  };
+  // Click outside handler for suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setIsFocused(false);
+      }
+    };
 
-  // Perform search based on the query
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Perform search and update suggestions
   const performSearch = (query) => {
     if (query.trim()) {
-      const result = fuse.search(query);
-      setSuggestions(result.length > 0 ? result.map((res) => res.item) : []);
+      const results = fuse.search(query);
+      setSuggestions(results.map(result => result.item));
     } else {
-      setSuggestions(redirectionKeywords); // Show all keywords when query is empty
+      setSuggestions([]);
     }
   };
 
@@ -88,61 +108,80 @@ const SearchBar = ({ pageList }) => {
     performSearch(query);
   };
 
-  // Handle suggestion click (for text search)
+  // Handle suggestion click
   const handleSuggestionClick = (path) => {
     setSearchQuery('');
     setSuggestions([]);
-    navigate(path); // Navigate to the selected path
+    setIsFocused(false);
+    navigate(path);
   };
 
-  // Handle voice search (direct redirect to path)
-  const handleVoiceSearch = (query) => {
-    if (query.trim()) {
-      const result = fuse.search(query);
-      if (result.length > 0) {
-        navigate(result[0].item.path);  // Redirect directly to the matched path
-      } else {
-        console.log('No match found for voice search.');
-      }
+  // Start voice recognition
+  const startListening = () => {
+    if (window.recognition && !isListening) {
+      window.recognition.start();
+    }
+  };
+
+  // Handle voice search results
+  const handleVoiceSearch = (transcript) => {
+    const results = fuse.search(transcript);
+    if (results.length > 0) {
+      const bestMatch = results[0].item;
+      setSearchQuery(bestMatch.name);
+      setTimeout(() => {
+        navigate(bestMatch.path);
+        setSearchQuery('');
+      }, 1000);
+    } else {
+      setSearchQuery('No results found');
+      setTimeout(() => setSearchQuery(''), 2000);
     }
   };
 
   return (
-    <div className="flex items-center w-full md:w-1/2 lg:w-1/3 relative">
-      <div className="flex items-center bg-white rounded-full px-5 py-2 flex-grow">
+    <div ref={searchContainerRef} className="relative w-full md:w-1/2 lg:w-1/3">
+      <div className="flex items-center bg-white rounded-full px-5 py-2">
         <i className="fas fa-search text-black text-xl lg:text-2xl mr-2"></i>
         <input
           type="text"
           placeholder="Search..."
           className="bg-transparent focus:outline-none text-black text-base lg:text-xl w-full"
           value={searchQuery}
-          onFocus={() => { setIsFocused(true); performSearch(searchQuery); }}
           onChange={handleSearchQueryChange}
-          onBlur={() => setTimeout(() => setIsFocused(false), 100)}
+          onFocus={() => setIsFocused(true)}
         />
-        <i
-          className={`fas fa-microphone text-black text-xl lg:text-2xl ${isListening ? 'text-red-500' : ''} cursor-pointer`}
-          onClick={startListening} // Start voice recognition on click
-        ></i>
+        <button
+          className={`focus:outline-none ${isListening ? 'text-red-500' : 'text-black'}`}
+          onClick={startListening}
+        >
+          <i className="fas fa-microphone text-xl lg:text-2xl"></i>
+        </button>
       </div>
 
-      {/* Suggestions List - Positioned just below the search bar */}
-      {isFocused && (
-        <ul className="absolute left-0 lg:w-[450px] md:w-80 bg-white text-black border rounded-md z-10 mt-96">
-          {suggestions.length > 0 ? (
-            suggestions.slice(0, 7).map((suggestion) => (
-              <li
-                key={suggestion.path}
-                className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                onClick={() => handleSuggestionClick(suggestion.path)}
-              >
-                {suggestion.name}
-              </li>
-            ))
-          ) : (
-            <li className="cursor-default px-4 py-2 text-gray-500">No results found</li>
-          )}
-        </ul>
+      {/* Suggestions dropdown */}
+      {isFocused && suggestions.length > 0 && (
+        <div className="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto">
+          {suggestions.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center px-4 py-3 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleSuggestionClick(item.path)}
+            >
+              <i className={`fas ${item.icon} text-black mr-3`}></i>
+              <span className="text-black">{item.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* No results message */}
+      {isFocused && searchQuery && suggestions.length === 0 && (
+        <div className="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50">
+          <div className="px-4 py-3 text-black">
+            No results found
+          </div>
+        </div>
       )}
     </div>
   );
