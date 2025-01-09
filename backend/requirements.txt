@@ -7,3 +7,15 @@ tzdata==2024.1
 psycopg2-binary
 mysqlclient
 gtts
+wfastcgi
+djangorestframework
+djangorestframework-jwt
+djangorestframework-simplejwt
+python-decouple
+django-jazzmin
+django-import-export
+django-extensions
+django-filter
+django-allauth
+django-cors-headers
+openpyxl

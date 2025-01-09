@@ -122,7 +122,7 @@ const SearchBar = () => {
   return (
     <div ref={searchContainerRef} className="relative w-full md:w-1/2 lg:w-1/3">
       <div className="flex items-center bg-white rounded-full px-5 py-2">
-        <i className="fas fa-search text-gray-500 text-xl lg:text-2xl mr-2"></i>
+        <i className="fas fa-search text-black text-xl lg:text-2xl mr-2"></i>
         <input
           type="text"
           placeholder="Search..."
@@ -132,7 +132,7 @@ const SearchBar = () => {
           onFocus={() => setIsFocused(true)}
         />
         <button
-          className={`focus:outline-none ${isListening ? 'text-red-500' : 'text-gray-500'}`}
+          className={`focus:outline-none ${isListening ? 'text-red-500' : 'text-black'}`}
           onClick={startListening}
         >
           <i className="fas fa-microphone text-xl lg:text-2xl"></i>
@@ -149,13 +149,13 @@ const SearchBar = () => {
                 className="flex items-center px-4 py-3 hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleSuggestionClick(item.path)}
               >
-                <i className={`fas ${item.icon} text-gray-500 mr-3`}></i>
+                <i className={`fas ${item.icon} text-black mr-3`}></i>
                 <span className="text-gray-800">{item.name}</span>
               </div>
             ))
           ) : (
             searchQuery && (
-              <div className="px-4 py-3 text-gray-500">
+              <div className="px-4 py-3 text-black">
                 No results found
               </div>
             )
