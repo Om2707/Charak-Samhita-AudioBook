@@ -38,11 +38,22 @@ class ShlokaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SectionSerializer(serializers.ModelSerializer):
-    shlokas = ShlokaSerializer(many=True, read_only=True)
+    shlokas = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
-        fields = ['id', 'section_number', 'section_name', 'section_image', 'shlokas', 'chapter']
+        fields = ['id', 'section_number', 'section_name', 'section_image', 'chapter', 'shlokas']
+
+    def get_shlokas(self, obj):
+        # Exclude shlokas if the context has `exclude_shlokas=True`
+        exclude_shlokas = self.context.get('exclude_shlokas', False)
+        if exclude_shlokas:
+            return None  # Or return an empty list []
+        shlokas = Shloka.objects.filter(section=obj).values(
+            'id', 'shloka_number', 'shlok_text', 'audio'
+        )
+        return list(shlokas)
+
 
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:

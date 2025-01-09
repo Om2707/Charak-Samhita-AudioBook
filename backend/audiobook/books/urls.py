@@ -17,7 +17,13 @@ book_router = NestedDefaultRouter(router, r'books', lookup='book')
 book_router.register(r'chapters', ChapterViewSet, basename='book-chapters')
 
 chapter_router = NestedDefaultRouter(book_router, r'chapters', lookup='chapter')
+
+chapter_router.register(r'sections', SectionViewSet, basename='chapter-sections')
+
 chapter_router.register(r'shlokas', ShlokaViewSet, basename='chapter-shlokas')
+
+section_router = NestedDefaultRouter(chapter_router, r'sections', lookup='section')
+section_router.register(r'shlokas', ShlokaViewSet, basename='section-shlokas')
 
 urlpatterns = [
 
@@ -30,8 +36,15 @@ urlpatterns = [
     path('book/<int:pk>/', book_detail, name='book_detail'),
     path('book/<int:book_pk>/chapters/', book_chapters, name='book_chapters'),
     
+
     path('book/<int:book_pk>/chapter/<int:pk>/', chapter_detail, name='chapter_detail'),
-    path('chapter/<int:chapter_pk>/section/<int:pk>/', section_detail, name='section_detail'),
+
+
+    path('book/<int:book_pk>/chapter/<int:chapter_pk>/section/', section_detail, name='section_detail'),
+    path('book/<int:book_pk>/chapter/<int:chapter_pk>/section/<int:pk>/', section_detail, name='section_detail'),
+
+    
+    path('book/<int:book_pk>/chapter/<int:chapter_pk>/section/<int:pk>/shloka/', shloka_detail, name='shloka_detail'),
     path('book/<int:book_pk>/chapter/<int:chapter_pk>/shloka/', shloka_detail, name='shloka_detail'),
     
     # API routes
@@ -40,20 +53,15 @@ urlpatterns = [
     path('api/', include(chapter_router.urls)),  # Include nested route
     
     # Update audio playback path to match naming conventions
+
+    path(
+        'api/books/<int:book_pk>/chapters/<int:chapter_pk>/sections/<int:section_pk>/shlokas/<int:pk>/play-audio/',
+        ShlokaViewSet.as_view({'get': 'play_audio'}),
+        name='shloka-play-audio'
+    ),
     path('api/books/<int:book_pk>/chapters/<int:chapter_pk>/shlokas/<int:pk>/play-audio/',
      ShlokaViewSet.as_view({'get': 'play_audio'}),
      name='play_audio'
     ),
-    path(
-        'api/books/<int:book_pk>/chapters/<int:chapter_pk>/shlokas/<int:pk>/play-english-audio/',
-        ShlokaViewSet.as_view({'get': 'play_english_audio'}),
-        name='play_english_audio'
-    ),
-    path(
-        'api/books/<int:book_pk>/chapters/<int:chapter_pk>/shlokas/<int:pk>/play-hindi-audio/',
-        ShlokaViewSet.as_view({'get': 'play_hindi_audio'}),
-        name='play_hindi_audio'
-    ),
-
 ]
 

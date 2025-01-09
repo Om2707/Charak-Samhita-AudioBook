@@ -17,6 +17,9 @@ from rest_framework import generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -189,6 +192,47 @@ class SectionViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = SectionFilterSet
 
+    def get_queryset(self):
+        book_pk = self.kwargs.get('book_pk')
+        chapter_pk = self.kwargs.get('chapter_pk')
+        if book_pk and chapter_pk:
+            return Section.objects.filter(chapter__book__id=book_pk, chapter__id=chapter_pk)
+        return Section.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        """
+        Override the list method to exclude shlokas in the response.
+        """
+        queryset = self.get_queryset()
+        serializer = SectionSerializer(queryset, many=True, context={'exclude_shlokas': True})
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Override the retrieve method to exclude shlokas in the response.
+        """
+        instance = self.get_object()
+        serializer = SectionSerializer(instance, context={'exclude_shlokas': True})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_path='shlokas')
+    def shlokas(self, request, *args, **kwargs):
+        """
+        Handles listing shlokas for a specific section.
+        """
+        section = self.get_object()
+        shlokas = Shloka.objects.filter(section=section).values(
+            'id', 'shloka_number', 'shlok_text', 'audio'
+        )
+        for shloka in shlokas:
+            shloka['play_audio_url'] = request.build_absolute_uri(
+                f"{self.request.path}/{shloka['id']}/play-audio"
+            )
+        return JsonResponse(list(shlokas), safe=False)
+
+
+
+
 class ShlokaViewSet(viewsets.ModelViewSet):
     serializer_class = ShlokaSerializer
     renderer_classes = [JSONRenderer]
@@ -198,9 +242,19 @@ class ShlokaViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         book_pk = self.kwargs.get('book_pk')
         chapter_pk = self.kwargs.get('chapter_pk')
+        section_pk = self.kwargs.get('section_pk')
+
+        if section_pk:
+            # Return only shlokas belonging to the specified section
+            return Shloka.objects.filter(section_id=section_pk)
+
         if book_pk and chapter_pk:
-            return Shloka.objects.filter(chapter__book__id=book_pk, chapter__id=chapter_pk)
+            # Return shlokas for a chapter, excluding those already linked to a section
+            return Shloka.objects.filter(chapter__book__id=book_pk, chapter__id=chapter_pk, section__isnull=True)
+
         return Shloka.objects.none()
+    
+    
 
     @action(detail=True, methods=['get'], url_path='play-audio')
     def play_audio(self, request, *args, **kwargs):

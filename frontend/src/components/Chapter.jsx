@@ -52,7 +52,7 @@ function Chapter() {
       </div>
 
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10" >
           {chapters.map((chapter) => (
             <div
               key={chapter.id}

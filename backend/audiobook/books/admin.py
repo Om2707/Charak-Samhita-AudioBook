@@ -50,7 +50,7 @@ class ShlokaAdminForm(forms.ModelForm):
 
 class ShlokaAdmin(admin.ModelAdmin):
     form = ShlokaAdminForm
-    list_display = ('id', 'shloka_number', 'shlok_text', 'audio', 'chapter', 'created_at', 'modified_at')
+    list_display = ('id', 'shloka_number', 'shlok_text', 'audio', 'chapter','section' ,'created_at', 'modified_at')
     change_list_template = 'books/change_list.html'
 
     search_fields = ('shlok_text', 'audio', 'chapter__chapter_name')
