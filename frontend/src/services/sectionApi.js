@@ -6,12 +6,6 @@ export const sectionApi = createApi({
     baseUrl: "http://127.0.0.1:8000/api",
   }),
   endpoints: (builder) => ({
-    // Get shlokas not linked to any section for a specific chapter
-    getChapterShlokas: builder.query({
-      query: ({ bookId, chapterId }) =>
-        `/books/${bookId}/chapters/${chapterId}/shlokas/`,
-    }),
-    // Existing endpoints...
     getSections: builder.query({
       query: ({ bookId, chapterId }) => 
         `/books/${bookId}/chapters/${chapterId}/sections/`,
@@ -28,7 +22,6 @@ export const sectionApi = createApi({
 });
 
 export const {
-  useGetChapterShlokasQuery,
   useGetSectionsQuery,
   useGetSectionByIdQuery,
   useGetSectionShlokasQuery,

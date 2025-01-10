@@ -42,17 +42,24 @@ class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        fields = ['id', 'section_number', 'section_name', 'section_image', 'chapter', 'shlokas']
+        fields = ['id', 'section_number', 'section_name', 'section_slider', 'chapter', 'shlokas']
 
     def get_shlokas(self, obj):
-        # Exclude shlokas if the context has `exclude_shlokas=True`
         exclude_shlokas = self.context.get('exclude_shlokas', False)
         if exclude_shlokas:
-            return None  # Or return an empty list []
-        shlokas = Shloka.objects.filter(section=obj).values(
-            'id', 'shloka_number', 'shlok_text', 'audio'
-        )
-        return list(shlokas)
+            return []  # Return empty list instead of None to keep consistent structure
+        request = self.context.get('request')
+        shlokas = Shloka.objects.filter(section=obj)
+        return [
+            {
+                'id': shloka.id,
+                'shloka_number': shloka.shloka_number,
+                'shlok_text': shloka.shlok_text,
+                'audio': shloka.audio.url if shloka.audio else '',
+                'play_audio_url': request.build_absolute_uri(f'{request.path}/{shloka.id}/play-audio') if request else ''
+            }
+            for shloka in shlokas
+        ]
 
 
 class ChapterSerializer(serializers.ModelSerializer):

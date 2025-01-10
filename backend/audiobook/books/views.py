@@ -106,10 +106,10 @@ def book_chapters(request, book_pk):
 
 def chapter_detail(request, book_pk, pk):
     chapter = get_object_or_404(Chapter, pk=pk, book_id=book_pk)
-    sections = Section.objects.filter(chapter=chapter).values('id', 'section_number', 'section_name', 'section_image')
-    sections = list(sections)
-    for section in sections:
-        section['section_image'] = section['section_image'].url if section['section_image'] else None
+    section = Section.objects.filter(chapter=chapter).values('id', 'section_number', 'section_name', 'section_slider')
+    section = list(section)
+    for section in section:
+        section['section_slider'] = section['section_slider'].url if section['section_slider'] else None
 
     shlokas = Shloka.objects.filter(chapter=chapter).values('id', 'shloka_number', 'shlok_text', 'chapter', 'section')
 
@@ -122,21 +122,26 @@ def chapter_detail(request, book_pk, pk):
             'chapter_slider': chapter.chapter_slider.url if chapter.chapter_slider else None,
             'book': chapter.book_id
         },
-        'sections': sections,
+        'section': section,
         'shlokas': list(shlokas)
     }
     return JsonResponse(response_data)
 
 def section_detail(request, chapter_pk, pk):
     section = get_object_or_404(Section, pk=pk, chapter_id=chapter_pk)
-    shlokas = Shloka.objects.filter(section=section).values('id', 'shloka_number', 'shlok_text', 'chapter', 'section')
+    section_slider_url = request.build_absolute_uri(section.section_slider.url) if section.section_slider else None
+
+    print(f"Section Slider URL: {section.section_slider_url}")
+    shlokas = Shloka.objects.filter(section=section).values(
+        'id', 'shloka_number', 'section_slider', 'shlok_text', 'chapter', 'section'
+    )
     
     response_data = {
         'section': {
             'id': section.id,
             'section_number': section.section_number,
             'section_name': section.section_name,
-            'section_image': section.section_image.url if section.section_image else None,
+            'section_slider': section.book_slider.url if section.book_slider else None,
             'chapter': section.chapter_id
         },
         'shlokas': list(shlokas)
@@ -150,8 +155,7 @@ def shloka_detail(request, pk):
             'id': shloka.id,
             'shloka_number': shloka.shloka_number,
             'shlok_text': shloka.shlok_text,
-            'shlok_transalation_hindi': shloka.shlok_transalation_hindi,
-            'shlok_transalation_english': shloka.shlok_transalation_english,
+            'shlok_audio': shloka.audio,
             'chapter': shloka.chapter_id,
             'section': shloka.section_id,
         }
@@ -204,7 +208,8 @@ class SectionViewSet(viewsets.ModelViewSet):
         Override the list method to exclude shlokas in the response.
         """
         queryset = self.get_queryset()
-        serializer = SectionSerializer(queryset, many=True, context={'exclude_shlokas': True})
+        # Passing exclude_shlokas=True to context to exclude shlokas in list view
+        serializer = SectionSerializer(queryset, many=True, context={'exclude_shlokas': True, 'request': request})
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
@@ -212,7 +217,8 @@ class SectionViewSet(viewsets.ModelViewSet):
         Override the retrieve method to exclude shlokas in the response.
         """
         instance = self.get_object()
-        serializer = SectionSerializer(instance, context={'exclude_shlokas': True})
+        # Passing exclude_shlokas=True to context to exclude shlokas in retrieve view
+        serializer = SectionSerializer(instance, context={'exclude_shlokas': True, 'request': request})
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'], url_path='shlokas')
@@ -229,6 +235,7 @@ class SectionViewSet(viewsets.ModelViewSet):
                 f"{self.request.path}/{shloka['id']}/play-audio"
             )
         return JsonResponse(list(shlokas), safe=False)
+
 
 
 

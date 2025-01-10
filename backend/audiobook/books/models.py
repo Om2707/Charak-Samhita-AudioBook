@@ -89,7 +89,7 @@ class Section(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='sections')
     section_number = models.DecimalField(decimal_places=1,max_digits=10)
     section_name = models.CharField(max_length=200)
-    section_image = models.ImageField(upload_to='section_images/', blank=True, null=True)
+    section_slider = models.ImageField(upload_to='section_slider/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     modified_by = models.CharField(max_length=100, blank=True, null=True)

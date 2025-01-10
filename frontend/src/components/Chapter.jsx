@@ -1,19 +1,32 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetBooksQuery } from "../services/booksApi";
 import { useGetChaptersQuery } from "../services/chapterApi";
+import { useGetSectionsQuery } from "../services/sectionApi";
 import Navbar from "./Navbar";
 
 function Chapter() {
   const { bookId } = useParams();
+  const navigate = useNavigate();
   const { data: books = [], book_error, book_isLoading } = useGetBooksQuery();
   const { data: chapters = [], error, isLoading } = useGetChaptersQuery(bookId);
-  const navigate = useNavigate();
 
   const book = books.find((book) => book.id === parseInt(bookId));
 
-  const handleChapterClick = (chapterId) => {
-    navigate(`/books/${bookId}/chapters/${chapterId}/shlokas`);
+  const handleChapterClick = async (chapterId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/sections/`);
+      const sectionsData = await response.json();
+      if (sectionsData.length > 0) {
+        navigate(`/books/${bookId}/chapters/${chapterId}/sections`);
+      } else {
+        navigate(`/books/${bookId}/chapters/${chapterId}/shlokas`);
+      }
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+      // Optional: Show an error message to the user.
+    }
   };
+  
 
   if (isLoading || book_isLoading) {
     return (
@@ -52,7 +65,7 @@ function Chapter() {
       </div>
 
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10" >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10">
           {chapters.map((chapter) => (
             <div
               key={chapter.id}
@@ -61,9 +74,11 @@ function Chapter() {
                        transform transition duration-200 hover:scale-105 
                        hover:shadow-xl border border-gray-100"
             >
-              <p style={{ fontFamily: "'Tiro Devanagari Sanskrit', serif" }}
-                 className="text-center text-lg md:text-xl 
-                          tracking-wide leading-relaxed">
+              <p
+                style={{ fontFamily: "'Tiro Devanagari Sanskrit', serif" }}
+                className="text-center text-lg md:text-xl 
+                          tracking-wide leading-relaxed"
+              >
                 {chapter.chapter_name}
               </p>
             </div>

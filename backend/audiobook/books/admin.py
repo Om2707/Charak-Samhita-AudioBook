@@ -160,7 +160,7 @@ class ChapterAdmin(admin.ModelAdmin):
     list_filter = ('book', 'created_at', 'modified_at')
 
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'chapter', 'section_number', 'section_name', 'section_image', 'created_at', 'modified_at', 'modified_by')
+    list_display = ('id', 'chapter', 'section_number', 'section_name', 'section_slider', 'created_at', 'modified_at', 'modified_by')
     search_fields = ('section_name', 'chapter__chapter_name')
     list_filter = ('chapter', 'created_at', 'modified_at')
 

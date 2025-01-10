@@ -14,7 +14,7 @@ class ChapterForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['chapter', 'section_number', 'section_name', 'section_image']
+        fields = ['chapter', 'section_number', 'section_name', 'section_slider']
 
 class ShlokaForm(forms.ModelForm):
     class Meta:
