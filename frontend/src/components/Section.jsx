@@ -1,32 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetSectionByIdQuery, useGetSectionShlokasQuery } from "../services/sectionApi";
-import { usePlayAudioMutation } from "../services/shlokaApi";
+import { useGetSectionsQuery } from "../services/sectionApi";
+import { useGetChaptersQuery } from "../services/chapterApi";
 import Navbar from "./Navbar";
 
-function SectionShlokas() {
-  const { bookId, chapterId, sectionId } = useParams();
+function Section() {
+  const { bookId, chapterId } = useParams();
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
+  
+  const { 
+    data: chapters = [], 
+    isLoading: isLoadingChapter,
+    error: chapterError 
+  } = useGetChaptersQuery(bookId);
 
-  const { data: section, isLoading: isLoadingSection, error: sectionError } = useGetSectionByIdQuery({ bookId, chapterId, sectionId });
-  const { data: shlokas = [], isLoading: isLoadingShlokas, error: shlokasError } = useGetSectionShlokasQuery({ bookId, chapterId, sectionId });
+  const { 
+    data: sections = [], 
+    isLoading: isLoadingSections,
+    error: sectionsError 
+  } = useGetSectionsQuery({ bookId, chapterId });
 
-  const [playAudio] = usePlayAudioMutation();
+  const currentChapter = chapters.find(chapter => chapter.id.toString() === chapterId);
 
-  const handlePlayAudio = async (shlokaId) => {
-    try {
-      const response = await playAudio({ bookId, chapterId, shlokaId }).unwrap();
-      const audioBlob = new Blob([response], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play();
-    } catch (error) {
-      console.error("Error playing audio:", error);
-      // Optional: Show an error message to the user.
-    }
+  const handleSectionClick = (sectionId) => {
+    navigate(`/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas`);
   };
 
-  if (isLoadingSection || isLoadingShlokas) {
+  if (isLoadingChapter || isLoadingSections) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -34,13 +35,13 @@ function SectionShlokas() {
     );
   }
 
-  if (sectionError || shlokasError) {
-    console.error("Error fetching data:", sectionError || shlokasError);
+  if (chapterError || sectionsError) {
+    console.error("Error fetching data:", chapterError || sectionsError);
     return (
       <div className="p-4 mx-auto max-w-2xl text-center">
         <h2 className="text-xl font-bold text-red-600 mb-4">Error fetching data</h2>
         <pre className="bg-gray-100 p-4 rounded-lg overflow-auto">
-          {JSON.stringify(sectionError || shlokasError, null, 2)}
+          {JSON.stringify(chapterError || sectionsError, null, 2)}
         </pre>
       </div>
     );
@@ -49,44 +50,42 @@ function SectionShlokas() {
   return (
     <div className="min-h-screen bg-no-repeat bg-cover">
       <Navbar />
+      
       <div className="px-4 mt-1 sm:mt-2">
-        {section && (
+        {currentChapter?.chapter_slider && !imageError ? (
           <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
             <img
+              src={currentChapter.chapter_slider}
+              alt={currentChapter.chapter_name}
               className="w-full h-full object-contain sm:object-cover"
-              src={section.section_slider}
-              alt="Section Cover"
+              onError={() => setImageError(true)}
               loading="lazy"
             />
+          </div>
+        ) : (
+          <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-gray-100 flex items-center justify-center">
+            <span className="text-gray-400">Chapter image not available</span>
           </div>
         )}
       </div>
 
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10">
-          {shlokas.map((shloka, index) => (
+          {sections.map((section) => (
             <div
-              key={shloka.id}
+              key={section.id}
+              onClick={() => handleSectionClick(section.id)}
               className="bg-white shadow-lg rounded-lg p-4 cursor-pointer 
-                         transform transition duration-200 hover:scale-105 
-                         hover:shadow-xl border border-gray-100"
-              onClick={() => handlePlayAudio(shloka.id)}
+                       transform transition duration-200 hover:scale-105 
+                       hover:shadow-xl border border-gray-100"
             >
-              <p
+              <p 
                 style={{ fontFamily: "'Tiro Devanagari Sanskrit', serif" }}
-                className="text-center text-lg md:text-xl tracking-wide leading-relaxed"
+                className="text-center text-lg md:text-xl 
+                          tracking-wide leading-relaxed"
               >
-                Shloka {index + 1}
+                {section.section_name}
               </p>
-              <button
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlayAudio(shloka.id);
-                }}
-              >
-                Play Audio
-              </button>
             </div>
           ))}
         </div>
@@ -95,4 +94,4 @@ function SectionShlokas() {
   );
 }
 
-export default SectionShlokas;
+export default Section;
