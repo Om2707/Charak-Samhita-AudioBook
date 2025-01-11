@@ -47,15 +47,16 @@ function Shlokas() {
       <Navbar />
       {/* Banner Container */}
       <div className="px-4 mt-1 sm:mt-2">
-        {chapter && (
-          <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
-            <img
-              className="w-full h-full object-contain sm:object-cover"
-              src={chapter.chapter_slider}
-              alt={`Chapter ${chapter.chapter_number}`}
-              loading="lazy"
-            />
-          </div>
+  {chapter && (
+    <div className="w-full">
+      <img
+        className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
+        src={chapter.chapter_slider}
+        alt={`Chapter ${chapter.chapter_number}`}
+        loading="lazy"
+      />
+    </div>
+
         )}
       </div>
 

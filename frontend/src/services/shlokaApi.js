@@ -14,11 +14,18 @@ export const shlokaApi = createApi({
         `/books/${bookId}/chapters/${chapterId}/shlokas/${shlokaId}/`,
     }),
     playAudio: builder.mutation({
-      query: ({ bookId, chapterId, shlokaId }) => ({
-        url: `/books/${bookId}/chapters/${chapterId}/shlokas/${shlokaId}/play-audio/`,
-        method: 'GET',
-        responseType: 'blob', // To handle audio streaming
-      }),
+      query: ({ bookId, chapterId, sectionId, shlokaId }) => {
+        // Construct URL based on whether sectionId exists
+        const url = sectionId
+          ? `/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas/${shlokaId}/play-audio/`
+          : `/books/${bookId}/chapters/${chapterId}/shlokas/${shlokaId}/play-audio/`;
+        
+        return {
+          url,
+          method: 'GET',
+          responseType: 'blob',
+        };
+      },
     }),
   }),
 });

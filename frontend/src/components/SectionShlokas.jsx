@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetSectionByIdQuery, useGetSectionShlokasQuery } from "../services/sectionApi";
+import { usePlayAudioMutation } from "../services/shlokaApi";
+import Modal from "./Modal";
 import Navbar from "./Navbar";
 
 function SectionShlokas() {
   const { bookId, chapterId, sectionId } = useParams();
-  const navigate = useNavigate();
-  const [sliderImageError, setSliderImageError] = useState(false);
+  const [selectedShloka, setSelectedShloka] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const {
     data: section,
@@ -19,6 +21,39 @@ function SectionShlokas() {
     isLoading: isLoadingShlokas,
     error: shlokasError
   } = useGetSectionShlokasQuery({ bookId, chapterId, sectionId });
+
+  const [playAudio] = usePlayAudioMutation();
+
+  const handlePlayAudio = async (shlokaId, e) => {
+    e.stopPropagation();
+    if (isPlaying) return;
+
+    try {
+      setIsPlaying(true);
+      const response = await playAudio({ bookId, chapterId, shlokaId }).unwrap();
+      const audioBlob = new Blob([response], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+
+      audio.onended = () => {
+        setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      audio.play();
+    } catch (error) {
+      console.error("Error playing audio:", error);
+      setIsPlaying(false);
+    }
+  };
+
+  const openModal = (shloka) => {
+    setSelectedShloka(shloka);
+  };
+
+  const closeModal = () => {
+    setSelectedShloka(null);
+  };
 
   if (isLoadingSection || isLoadingShlokas) {
     return (
@@ -44,44 +79,48 @@ function SectionShlokas() {
     <div className="min-h-screen bg-no-repeat bg-cover">
       <Navbar />
       <div className="px-4 mt-1 sm:mt-2">
-        {section && (
-          <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
-            <img
-              className="w-full h-full object-contain sm:object-cover"
-              src={section.section_slider}
-              alt="Section Cover"
-              loading="lazy"
-              onError={() => setSliderImageError(true)}
-            />
-            {sliderImageError && (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-500">Section image not available</span>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+  {section && (
+    <div className="w-full">
+      <img
+        className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
+        src={section.section_slider}
+        alt="Section Cover"
+        loading="lazy"
+      />
+    </div>
+  )}
+</div>
+
 
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10">
-          {shlokas.map((shloka, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          {shlokas.map((shloka) => (
             <div
               key={shloka.id}
+              onClick={() => openModal(shloka)}
               className="bg-white shadow-lg rounded-lg p-4 cursor-pointer 
-                         transform transition duration-200 hover:scale-105 
-                         hover:shadow-xl border border-gray-100"
-              onClick={() => navigate(`/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}`)}
+                       transform transition duration-200 hover:scale-105 
+                       hover:shadow-xl border border-gray-100"
             >
               <p
-                style={{ fontFamily: "'Tiro Devanagari Sanskrit', serif" }}
+               style={{ fontFamily: "'playfair', serif" }}
                 className="text-center text-lg md:text-xl tracking-wide leading-relaxed"
               >
-                Shloka {index + 1}
+                Shloka {shloka.shloka_number}
               </p>
             </div>
           ))}
         </div>
       </div>
+
+      {selectedShloka && (
+        <Modal
+          shloka={selectedShloka}
+          bookId={bookId}
+          chapterId={chapterId}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 }

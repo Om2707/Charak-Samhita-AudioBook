@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 
-const Modal = ({ shloka, bookId, chapterId, onClose }) => {
+const Modal = ({ shloka, bookId, chapterId, sectionId, onClose }) => {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
@@ -11,7 +11,11 @@ const Modal = ({ shloka, bookId, chapterId, onClose }) => {
   const [loading, setLoading] = useState(false);
   const audioRef = useRef(null);
   const modalRef = useRef(null);
-  const audioApiUrl = `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}/play-audio/`;
+
+  // Conditional audio API URL based on whether it's a Shloka or Section
+  const audioApiUrl = sectionId
+    ? `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas/${shloka.id}/play-audio/`
+    : `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}/play-audio/`;
 
   useEffect(() => {
     const fetchAudio = async () => {
@@ -39,7 +43,7 @@ const Modal = ({ shloka, bookId, chapterId, onClose }) => {
         audioRef.current.pause();
       }
     };
-  }, [audioApiUrl]);
+  }, [audioApiUrl, shloka.id]); // Re-fetch audio when URL or Shloka changes
 
   const playAudio = () => {
     if (audioRef.current && audioUrl) {
@@ -106,14 +110,12 @@ const Modal = ({ shloka, bookId, chapterId, onClose }) => {
         ref={modalRef}
         className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-auto relative"
       >
-        {/* Dynamic padding based on screen size */}
         <div className="p-4 sm:p-6 md:p-8">
           <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center text-gray-800">
             Shloka {shloka.shloka_number}
           </h2>
 
           <div className="bg-blue-50 rounded-lg shadow-md border-2 sm:border-4 border-blue-400">
-            {/* Content section with dynamic padding and responsive text */}
             <div className="p-3 sm:p-4 md:p-6">
               <p className="text-base sm:text-lg md:text-xl text-center leading-relaxed break-words">
                 {shloka.shlok_text}
@@ -126,7 +128,6 @@ const Modal = ({ shloka, bookId, chapterId, onClose }) => {
                   onTimeUpdate={updateProgress}
                   onEnded={() => setPlaying(false)}
                 />
-                {/* Audio controls with responsive spacing */}
                 <div className="flex items-center space-x-2 sm:space-x-4">
                   <button
                     className={`rounded-full w-10 h-10 sm:w-12 sm:h-12 flex justify-center items-center bg-blue-500 text-white hover:bg-blue-600 transition-all transform hover:scale-105 ${
@@ -142,7 +143,6 @@ const Modal = ({ shloka, bookId, chapterId, onClose }) => {
                     )}
                   </button>
 
-                  {/* Flexible progress bar */}
                   <div className="flex-grow">
                     <input
                       type="range"
@@ -167,7 +167,6 @@ const Modal = ({ shloka, bookId, chapterId, onClose }) => {
                   </select>
                 </div>
                 
-                {/* Remaining time with responsive text */}
                 <div className="text-center text-xs sm:text-sm mt-2 sm:mt-3 text-gray-600">
                   <span>{`Remaining Time: ${Math.floor(remainingTime / 60)}:${Math.floor(remainingTime % 60)
                     .toString()

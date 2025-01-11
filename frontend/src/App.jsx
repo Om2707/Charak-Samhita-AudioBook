@@ -60,7 +60,8 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          {/* Section Shlokas Route */}
+          <Route
             path="/books/:bookId/chapters/:chapterId/sections/:sectionId/shlokas"
             element={
               <ProtectedRoute>
@@ -68,14 +69,7 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/books/:bookId/chapters/:chapterId/sections/:sectionId/shlokas"
-            element={
-              <ProtectedRoute>
-                <Shlokas />
-              </ProtectedRoute>
-            }
-          />
+          {/* Regular Chapter Shlokas Route */}
           <Route
             path="/books/:bookId/chapters/:chapterId/shlokas"
             element={

@@ -52,22 +52,23 @@ function Section() {
       <Navbar />
       
       <div className="px-4 mt-1 sm:mt-2">
-        {currentChapter?.chapter_slider && !imageError ? (
-          <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
-            <img
-              src={currentChapter.chapter_slider}
-              alt={currentChapter.chapter_name}
-              className="w-full h-full object-contain sm:object-cover"
-              onError={() => setImageError(true)}
-              loading="lazy"
-            />
-          </div>
-        ) : (
-          <div className="w-full h-[150px] sm:h-[300px] md:h-[350px] lg:h-[400px] bg-gray-100 flex items-center justify-center">
-            <span className="text-gray-400">Chapter image not available</span>
-          </div>
-        )}
-      </div>
+  {currentChapter?.chapter_slider && !imageError ? (
+    <div className="w-full">
+      <img
+        src={currentChapter.chapter_slider}
+        alt={currentChapter.chapter_name}
+        className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
+        onError={() => setImageError(true)}
+        loading="lazy"
+      />
+    </div>
+  ) : (
+    <div className="w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px] bg-gray-100 flex items-center justify-center">
+      <span className="text-gray-400">Chapter image not available</span>
+    </div>
+  )}
+</div>
+
 
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10">
