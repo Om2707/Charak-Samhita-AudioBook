@@ -1,30 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetSectionByIdQuery, useGetSectionShlokasQuery } from "../services/sectionApi";
-import { usePlayAudioMutation } from "../services/shlokaApi";
 import Navbar from "./Navbar";
 
 function SectionShlokas() {
   const { bookId, chapterId, sectionId } = useParams();
   const navigate = useNavigate();
+  const [sliderImageError, setSliderImageError] = useState(false);
 
-  const { data: section, isLoading: isLoadingSection, error: sectionError } = useGetSectionByIdQuery({ bookId, chapterId, sectionId });
-  const { data: shlokas = [], isLoading: isLoadingShlokas, error: shlokasError } = useGetSectionShlokasQuery({ bookId, chapterId, sectionId });
+  const {
+    data: section,
+    isLoading: isLoadingSection,
+    error: sectionError
+  } = useGetSectionByIdQuery({ bookId, chapterId, sectionId });
 
-  const [playAudio] = usePlayAudioMutation();
-
-  const handlePlayAudio = async (shlokaId) => {
-    try {
-      const response = await playAudio({ bookId, chapterId, shlokaId }).unwrap();
-      const audioBlob = new Blob([response], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play();
-    } catch (error) {
-      console.error("Error playing audio:", error);
-      // Optional: Show an error message to the user.
-    }
-  };
+  const {
+    data: shlokas = [],
+    isLoading: isLoadingShlokas,
+    error: shlokasError
+  } = useGetSectionShlokasQuery({ bookId, chapterId, sectionId });
 
   if (isLoadingSection || isLoadingShlokas) {
     return (
@@ -57,7 +51,13 @@ function SectionShlokas() {
               src={section.section_slider}
               alt="Section Cover"
               loading="lazy"
+              onError={() => setSliderImageError(true)}
             />
+            {sliderImageError && (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500">Section image not available</span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -70,7 +70,7 @@ function SectionShlokas() {
               className="bg-white shadow-lg rounded-lg p-4 cursor-pointer 
                          transform transition duration-200 hover:scale-105 
                          hover:shadow-xl border border-gray-100"
-              onClick={() => handlePlayAudio(shloka.id)}
+              onClick={() => navigate(`/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}`)}
             >
               <p
                 style={{ fontFamily: "'Tiro Devanagari Sanskrit', serif" }}
@@ -78,15 +78,6 @@ function SectionShlokas() {
               >
                 Shloka {index + 1}
               </p>
-              <button
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlayAudio(shloka.id);
-                }}
-              >
-                Play Audio
-              </button>
             </div>
           ))}
         </div>

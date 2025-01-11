@@ -16,7 +16,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 # settings.py
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'efed-117-198-141-197.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '6060-47-247-94-66.ngrok-free.app']
 
 
 # Application definition
@@ -94,11 +94,11 @@ TEMPLATES = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://efed-117-198-141-197.ngrok-free.app',  # Replace with your new Ngrok URL
+    'https://6060-47-247-94-66.ngrok-free.app',  # Replace with your new Ngrok URL
 ]
 
 CSRF_ALLOWED_ORIGINS = [
-    'https://efed-117-198-141-197.ngrok-free.app',  # Replace with your new Ngrok URL
+    'https://6060-47-247-94-66.ngrok-free.app',  # Replace with your new Ngrok URL
 ]
 
 
@@ -107,7 +107,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://10.6.0.247",  # your React app's URL
-    "https://efed-117-198-141-197.ngrok-free.app ->",
+    "https://6060-47-247-94-66.ngrok-free.app",
     "http://localhost"
 ]
 

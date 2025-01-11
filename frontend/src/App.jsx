@@ -8,6 +8,7 @@ const Signup = lazy(() => import('./components/Signup'));
 const Home = lazy(() => import('./components/Home'));
 const Chapter = lazy(() => import('./components/Chapter'));
 const Section = lazy(() => import('./components/Section'));
+const SectionShlokas = lazy(() => import('./components/SectionShlokas'));
 const Shlokas = lazy(() => import('./components/Shlokas'));
 const NotFound = lazy(() => import('./components/NotFound')); 
 
@@ -56,6 +57,14 @@ const AppContent = () => {
             element={
               <ProtectedRoute>
                 <Section />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/books/:bookId/chapters/:chapterId/sections/:sectionId/shlokas"
+            element={
+              <ProtectedRoute>
+                <SectionShlokas />
               </ProtectedRoute>
             }
           />
