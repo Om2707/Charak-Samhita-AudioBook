@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetChaptersQuery } from '../services/chapterApi';
 import { useGetShlokasQuery } from '../services/shlokaApi';
@@ -6,7 +6,7 @@ import Modal from './Modal';
 import Navbar from './Navbar';
 
 function Shlokas() {
-  const { bookId, chapterId } = useParams();
+  const { bookId, chapterId, sectionId } = useParams(); 
   const { data: chapters = [], chapter_error, chapter_isLoading } = useGetChaptersQuery(bookId);
   const { data: shlokas = [], error, isLoading } = useGetShlokasQuery({ bookId, chapterId });
 
@@ -88,6 +88,7 @@ function Shlokas() {
           shloka={selectedShloka}
           bookId={bookId}
           chapterId={chapterId}
+          sectionId={sectionId}
           onClose={closeModal}
         />
       )}

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useGetBooksQuery } from "../services/booksApi"; // Ensure correct path
+import { useGetBooksQuery } from "../services/booksApi"; 
 
 const BooksCards = () => {
   const { data: books, error, isLoading } = useGetBooksQuery();

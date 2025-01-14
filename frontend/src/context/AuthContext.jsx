@@ -6,7 +6,6 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    // Check if user is authenticated based on cookie presence
     useEffect(() => {
         const userData = Cookies.get('user');
         if (userData) {
@@ -14,29 +13,29 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // Detects cookie changes (every second) and updates user state
     useEffect(() => {
         const interval = setInterval(() => {
             const userData = Cookies.get('user');
             if (userData) {
                 setUser(JSON.parse(userData));
             } else {
-                setUser(null); // Clears user state when the cookie is removed
+                setUser(null); 
             }
-        }, 1000); // Checks every second for updates
+        }, 1000); 
 
-        return () => clearInterval(interval); // Cleanup on component unmount
+        return () => clearInterval(interval); 
     }, []);
 
     const login = (userData) => {
         setUser(userData);
-        Cookies.set('user', JSON.stringify(userData), { expires: 7 }); // Ensures user data persists in cookies
+        Cookies.set('user', JSON.stringify(userData), { expires: 7 });
     };
 
     const logout = () => {
         setUser(null);
-        Cookies.remove('token'); // Removing token if needed
-        Cookies.remove('user'); // Remove user data cookie
+        Cookies.remove('token'); 
+        Cookies.remove('user');
+        Cookies.remove('username');
     };
 
     return (

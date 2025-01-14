@@ -1,4 +1,3 @@
-// Navbar.jsx
 import { useState, useEffect } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -13,7 +12,6 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Check if user is authenticated
   useEffect(() => {
     const token = Cookies.get('token');
     if (!token) {
@@ -24,6 +22,7 @@ const Navbar = () => {
   const handleLogout = () => {
     Cookies.remove('session');
     Cookies.remove('token');
+    Cookies.remove('username');
     navigate('/');
   };
 
@@ -100,7 +99,6 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Sidebar */}
       <div
         id="sidebar"
         className={`fixed top-0 left-0 h-full w-64 md:w-72 bg-blue-500 text-white transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} z-50 ease-in-out duration-300`}

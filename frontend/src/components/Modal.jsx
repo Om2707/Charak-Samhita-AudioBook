@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import  { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,7 +12,6 @@ const Modal = ({ shloka, bookId, chapterId, sectionId, onClose }) => {
   const audioRef = useRef(null);
   const modalRef = useRef(null);
 
-  // Conditional audio API URL based on whether it's a Shloka or Section
   const audioApiUrl = sectionId
     ? `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas/${shloka.id}/play-audio/`
     : `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}/play-audio/`;
@@ -43,7 +42,7 @@ const Modal = ({ shloka, bookId, chapterId, sectionId, onClose }) => {
         audioRef.current.pause();
       }
     };
-  }, [audioApiUrl, shloka.id]); // Re-fetch audio when URL or Shloka changes
+  }, [audioApiUrl, shloka.id]); 
 
   const playAudio = () => {
     if (audioRef.current && audioUrl) {

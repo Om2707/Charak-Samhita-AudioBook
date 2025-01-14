@@ -22,7 +22,6 @@ function Chapter() {
       }
     } catch (error) {
       console.error("Error fetching sections:", error);
-      // Optional: Show an error message to the user.
     }
   };
   
@@ -51,19 +50,17 @@ function Chapter() {
     <div className="min-h-screen bg-no-repeat bg-cover">
       <Navbar />
       <div className="px-4 mt-1 sm:mt-2">
-  {book && (
-    <div className="w-full">
-      <img
-        className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
-        src={book.book_slider}
-        alt="Book Cover"
-        loading="lazy"
-      />
-    </div>
-  )}
-</div>
-
-
+        {book && (
+          <div className="w-full">
+            <img
+              className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
+              src={book.book_slider}
+              alt="Book Cover"
+              loading="lazy"
+            />
+          </div>
+        )}
+      </div>
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 xl:gap-10">
           {chapters.map((chapter) => (

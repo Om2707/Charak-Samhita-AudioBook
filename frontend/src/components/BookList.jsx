@@ -1,4 +1,5 @@
-import { useGetBooksQuery } from "../services/booksApi"; // Adjust the path accordingly
+import { useGetBooksQuery } from "../services/booksApi"; 
+import BookCard from './BookCard';
 
 function BookList() {
   const { data: books, error, isLoading } = useGetBooksQuery();
@@ -13,7 +14,7 @@ function BookList() {
           key={book.id}
           image={book.book_image}
           redirect={() => {
-            console.log(`Redirecting to ${book.redirect_path}`); // Assuming redirect_path is provided by the backend
+            console.log(`Redirecting to ${book.redirect_path}`); 
           }}
         />
       ))}

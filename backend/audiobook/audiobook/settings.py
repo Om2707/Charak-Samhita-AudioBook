@@ -106,6 +106,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:5174",
     "http://10.6.0.247",  # your React app's URL
     "https://6060-47-247-94-66.ngrok-free.app",
     "http://localhost"

@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }) => {
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    const token = Cookies.get('token'); // Check if the token exists in cookies
+    const token = Cookies.get('token'); 
     if (!user || !token) {
       setIsChecking(false);
     } else {
@@ -17,14 +17,14 @@ const ProtectedRoute = ({ children }) => {
   }, [user]);
 
   if (isChecking) {
-    return <div>Loading...</div>; // Show a loading screen while checking authentication
+    return <div>Loading...</div>; 
   }
 
   if (!user) {
-    return <Navigate to="/" replace />; // Redirect to the login page if not authenticated
+    return <Navigate to="/" replace />;
   }
 
-  return children; // Render protected children if authenticated
+  return children; 
 };
 
 export default ProtectedRoute;

@@ -10,7 +10,7 @@ import { setUser } from '../slices/authSlice';
 
 const schema = z.object({
     username: z.string().min(5, { message: 'Username is required' }),
-    password: z.string().min(2, { message: 'Password is required' }),
+    password: z.string().min(4, { message: 'Password is required' }),
 });
 
 function Login() {

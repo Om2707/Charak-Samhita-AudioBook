@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetSectionsQuery } from "../services/sectionApi";
 import { useGetChaptersQuery } from "../services/chapterApi";

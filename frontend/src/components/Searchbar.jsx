@@ -1,4 +1,3 @@
-// SearchBar.jsx
 import { useState, useEffect, useRef } from 'react';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
@@ -12,17 +11,15 @@ const SearchBar = () => {
   const searchContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  // Initialize Fuse.js with custom options for better fuzzy search
   const fuseOptions = {
     keys: ['name'],
-    threshold: 0.4, // Lower threshold for stricter matching
-    distance: 100, // Increased distance for better partial matches
-    minMatchCharLength: 2 // Minimum characters that must match
+    threshold: 0.4, 
+    distance: 100, 
+    minMatchCharLength: 2 
   };
   
   const fuse = new Fuse(redirectionKeywords, fuseOptions);
 
-  // Initialize speech recognition
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -59,7 +56,6 @@ const SearchBar = () => {
     window.recognition = recognition;
   }, []);
 
-  // Click outside handler for suggestions
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
@@ -71,7 +67,6 @@ const SearchBar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Perform search and update suggestions
   const performSearch = (query) => {
     if (query.trim()) {
       const results = fuse.search(query);
@@ -81,14 +76,12 @@ const SearchBar = () => {
     }
   };
 
-  // Handle search input change
   const handleSearchQueryChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
     performSearch(query);
   };
 
-  // Handle suggestion click
   const handleSuggestionClick = (path) => {
     setSearchQuery('');
     setSuggestions([]);
@@ -96,14 +89,12 @@ const SearchBar = () => {
     navigate(path);
   };
 
-  // Start voice recognition
   const startListening = () => {
     if (window.recognition && !isListening) {
       window.recognition.start();
     }
   };
 
-  // Handle voice search results
   const handleVoiceSearch = (transcript) => {
     const results = fuse.search(transcript);
     if (results.length > 0) {
@@ -139,7 +130,6 @@ const SearchBar = () => {
         </button>
       </div>
 
-      {/* Suggestions dropdown */}
       {isFocused && (
         <div className="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto">
           {suggestions.length > 0 ? (

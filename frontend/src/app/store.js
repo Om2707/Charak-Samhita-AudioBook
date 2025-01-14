@@ -4,7 +4,7 @@ import { booksApi } from "../services/booksApi";
 import { chapterApi } from "../services/chapterApi";
 import { sectionApi } from '../services/sectionApi';
 import { shlokaApi } from "../services/shlokaApi";
-import authReducer from "../slices/authSlice"; // Import your auth reducer
+import authReducer from "../slices/authSlice"; 
 
 const store = configureStore({
   reducer: {

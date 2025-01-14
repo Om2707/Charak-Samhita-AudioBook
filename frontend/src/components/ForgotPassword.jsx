@@ -21,14 +21,14 @@ export default function ForgotPassword() {
 
   const onSubmit = (data) => {
     console.log(data);
-    navigate("/login");
+    navigate("/");
   };
    
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="flex-1 flex flex-col items-center justify-center bg-white">
         <img
-          src="src\Images\Login.png"
+          src="/login.jpg"
           alt="eSharirbook Illustration"
           className="h-full w-full object-fill"
         />
@@ -53,7 +53,7 @@ export default function ForgotPassword() {
               id="email"
               type="text"
               {...register("email")}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
             {errors.email && (
               <p className="text-red-500 text-xs mt-1">
@@ -72,7 +72,7 @@ export default function ForgotPassword() {
               id="password"
               type="password"
               {...register("password")}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
@@ -83,7 +83,7 @@ export default function ForgotPassword() {
           <div className="mb-6">
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Change Password
             </button>
@@ -96,7 +96,7 @@ export default function ForgotPassword() {
               onClick={() => {
                 navigate("/signup");
               }}
-              className="text-teal-500 cursor-pointer hover:underline"
+              className="text-blue-500 cursor-pointer hover:underline"
             >
               Create Account
             </a>
@@ -105,9 +105,9 @@ export default function ForgotPassword() {
             Already a user?{" "}
             <a
               onClick={() => {
-                navigate("/login");
+                navigate("/");
               }}
-              className="text-teal-500 cursor-pointer hover:underline"
+              className="text-blue-500 cursor-pointer hover:underline"
             >
               Login
             </a>

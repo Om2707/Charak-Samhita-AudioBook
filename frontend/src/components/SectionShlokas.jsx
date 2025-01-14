@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetSectionByIdQuery, useGetSectionShlokasQuery } from "../services/sectionApi";
 import { usePlayAudioMutation } from "../services/shlokaApi";
@@ -79,19 +79,17 @@ function SectionShlokas() {
     <div className="min-h-screen bg-no-repeat bg-cover">
       <Navbar />
       <div className="px-4 mt-1 sm:mt-2">
-  {section && (
-    <div className="w-full">
-      <img
-        className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
-        src={section.section_slider}
-        alt="Section Cover"
-        loading="lazy"
-      />
-    </div>
-  )}
-</div>
-
-
+        {section && (
+          <div className="w-full">
+            <img
+              className="w-full h-auto max-h-[200px] sm:max-h-[300px] md:max-h-[400px] lg:max-h-[500px] xl:max-h-[600px] object-cover rounded-lg"
+              src={section.section_slider}
+              alt="Section Cover"
+              loading="lazy"
+            />
+          </div>
+        )}
+      </div>
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {shlokas.map((shloka) => (
@@ -116,6 +114,7 @@ function SectionShlokas() {
       {selectedShloka && (
         <Modal
           shloka={selectedShloka}
+          sectionId={sectionId}
           bookId={bookId}
           chapterId={chapterId}
           onClose={closeModal}
