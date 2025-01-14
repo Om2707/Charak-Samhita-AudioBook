@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { setUser } from '../slices/authSlice';
 
@@ -19,6 +20,7 @@ function Login() {
     const { login } = useAuth();
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         register,
@@ -63,6 +65,10 @@ function Login() {
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
         <div className="flex flex-col md:flex-row h-screen ">
             <div className="flex-1 flex flex-col items-center justify-center bg-white">
@@ -105,13 +111,26 @@ function Login() {
                             >
                                 Password
                             </label>
-                            <input
-                                id="password"
-                                type="password"
-                                {...register('password')}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
-                                placeholder="Enter your password"
-                            />
+                            <div className="relative">
+                                <input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    {...register('password')}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm pr-10"
+                                    placeholder="Enter your password"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center mt-1 text-gray-600 hover:text-gray-800"
+                                >
+                                    {showPassword ? (
+                                        <FaEye className="h-5 w-5" />
+                                    ) : (
+                                        <FaEyeSlash className="h-5 w-5" />
+                                    )}
+                                </button>
+                            </div>
                             {errors.password && (
                                 <p className="text-red-500 text-xs mt-1" aria-live="polite">
                                     {errors.password.message}
@@ -132,14 +151,14 @@ function Login() {
                                 {loading ? 'Signing In...' : 'Sign In'}
                             </button>
                         </div>
-                        <div className="text-center mb-4">
+                        {/* <div className="text-center mb-4">
                             <a
-                                href="#"
+                                href="/forgot-password"
                                 className="text-sm text-[#49a1ca] hover:underline"
                             >
                                 Forgot Password?
                             </a>
-                        </div>
+                        </div> */}
                     </form>
                     <div className="text-center mt-6">
                         <p className="text-sm">

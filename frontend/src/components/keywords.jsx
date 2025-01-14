@@ -1,4 +1,3 @@
-// names.js
 export const redirectionKeywords = [
     { name: 'Sutrasthana', path: '/books/1/chapters', icon: 'fa-book' },
     { name: 'Book 1', path: '/books/1/chapters', icon: 'fa-book' },

@@ -11,12 +11,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password']
         extra_kwargs = {
-            'password': {'write_only': True}  # Password should be write-only
+            'password': {'write_only': True} 
         }
 
     def create(self, validated_data):
         user = User(**validated_data)
-        user.set_password(validated_data['password'])  # Hash the password
+        user.set_password(validated_data['password'])  
         user.save()
         return user
 
@@ -47,7 +47,7 @@ class SectionSerializer(serializers.ModelSerializer):
     def get_shlokas(self, obj):
         exclude_shlokas = self.context.get('exclude_shlokas', False)
         if exclude_shlokas:
-            return []  # Return empty list instead of None to keep consistent structure
+            return [] 
         request = self.context.get('request')
         shlokas = Shloka.objects.filter(section=obj)
         return [
@@ -65,7 +65,6 @@ class SectionSerializer(serializers.ModelSerializer):
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
-        # Add 'sections' to the fields list
         fields = ['id', 'chapter_number', 'chapter_name', 'chapter_image', 'chapter_slider','book']
 
 class BookSerializer(serializers.ModelSerializer):

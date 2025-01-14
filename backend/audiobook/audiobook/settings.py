@@ -9,17 +9,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEST_REQUEST_RENDERER_CLASSES = api_settings.DEFAULT_RENDERER_CLASSES
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
 
 DEBUG = True
 
-# settings.py
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '6060-47-247-94-66.ngrok-free.app']
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -32,8 +28,8 @@ INSTALLED_APPS = [
     'books',
     'import_export',
     'django.contrib.sites',
-    'django_extensions', #Great packaged to access abstract models
-    'django_filters', #Used with DRF
+    'django_extensions', 
+    'django_filters', 
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -49,8 +45,8 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to the e-Sharir Admin Portal",
     "show_sidebar": True,
     "navigation_expanded": True,
-    "hide_apps": [],  # List of apps to hide from the admin sidebar
-    "hide_models": [],  # List of models to hide from the admin sidebar
+    "hide_apps": [],  
+    "hide_models": [], 
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
@@ -94,11 +90,11 @@ TEMPLATES = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://6060-47-247-94-66.ngrok-free.app',  # Replace with your new Ngrok URL
+    'https://6060-47-247-94-66.ngrok-free.app',  
 ]
 
 CSRF_ALLOWED_ORIGINS = [
-    'https://6060-47-247-94-66.ngrok-free.app',  # Replace with your new Ngrok URL
+    'https://6060-47-247-94-66.ngrok-free.app',  
 ]
 
 
@@ -107,7 +103,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
-    "http://10.6.0.247",  # your React app's URL
+    "http://10.6.0.247",  
     "https://6060-47-247-94-66.ngrok-free.app",
     "http://localhost"
 ]
@@ -174,7 +170,7 @@ SESSION_COOKIE_SECURE = True
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-SESSION_COOKIE_AGE = 1800  # Session expires after 60 seconds of inactivity
+SESSION_COOKIE_AGE = 1800  
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

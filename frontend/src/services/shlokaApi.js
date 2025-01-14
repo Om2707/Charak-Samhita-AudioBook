@@ -15,7 +15,6 @@ export const shlokaApi = createApi({
     }),
     playAudio: builder.mutation({
       query: ({ bookId, chapterId, sectionId, shlokaId }) => {
-        // Construct URL based on whether sectionId exists
         const url = sectionId
           ? `/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas/${shlokaId}/play-audio/`
           : `/books/${bookId}/chapters/${chapterId}/shlokas/${shlokaId}/play-audio/`;

@@ -11,6 +11,7 @@ const Section = lazy(() => import('./components/Section'));
 const SectionShlokas = lazy(() => import('./components/SectionShlokas'));
 const Shlokas = lazy(() => import('./components/Shlokas'));
 const NotFound = lazy(() => import('./components/NotFound')); 
+const ForgotPassword = lazy(() => import('./components/ForgotPassword')); 
 
 const LoadingSpinner = () => (
   <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-90 z-50">
@@ -36,6 +37,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
           <Route
             path="/home"
             element={

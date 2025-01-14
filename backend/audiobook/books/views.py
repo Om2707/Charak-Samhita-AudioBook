@@ -23,15 +23,14 @@ logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
-# View for registering new users
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = (permissions.AllowAny,)  # Allows unauthenticated access
+    permission_classes = (permissions.AllowAny,)  
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)  # This will raise a 400 error if validation fails
+        serializer.is_valid(raise_exception=True)  
         user = self.perform_create(serializer)
         return Response({
             "user": serializer.data,
@@ -41,22 +40,18 @@ class RegisterView(generics.CreateAPIView):
     def perform_create(self, serializer):
         return serializer.save()
 
-# Custom token serializer to add custom claims
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Add custom claims
         token['username'] = user.username
-        token['email'] = user.email  # Optionally include email
+        token['email'] = user.email  
         token['is_admin'] = user.is_staff
         return token
 
-# View to obtain JWT tokens
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-# View for retrieving the authenticated user's profile
 class UserProfileView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -65,7 +60,6 @@ class UserProfileView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
-# Function-based views
 def book_list(request):
     books = Book.objects.all().values('id', 'book_number', 'book_name', 'book_image')
     books = list(books)
@@ -162,7 +156,6 @@ def shloka_detail(request, pk):
     }
     return JsonResponse(response_data)
 
-# ViewSets for REST API
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     renderer_classes = [JSONRenderer]
@@ -208,7 +201,6 @@ class SectionViewSet(viewsets.ModelViewSet):
         Override the list method to exclude shlokas in the response.
         """
         queryset = self.get_queryset()
-        # Passing exclude_shlokas=True to context to exclude shlokas in list view
         serializer = SectionSerializer(queryset, many=True, context={'exclude_shlokas': True, 'request': request})
         return Response(serializer.data)
 
@@ -217,7 +209,6 @@ class SectionViewSet(viewsets.ModelViewSet):
         Override the retrieve method to exclude shlokas in the response.
         """
         instance = self.get_object()
-        # Passing exclude_shlokas=True to context to exclude shlokas in retrieve view
         serializer = SectionSerializer(instance, context={'exclude_shlokas': True, 'request': request})
         return Response(serializer.data)
 
@@ -252,11 +243,9 @@ class ShlokaViewSet(viewsets.ModelViewSet):
         section_pk = self.kwargs.get('section_pk')
 
         if section_pk:
-            # Return only shlokas belonging to the specified section
             return Shloka.objects.filter(section_id=section_pk)
 
         if book_pk and chapter_pk:
-            # Return shlokas for a chapter, excluding those already linked to a section
             return Shloka.objects.filter(chapter__book__id=book_pk, chapter__id=chapter_pk, section__isnull=True)
 
         return Shloka.objects.none()
@@ -268,11 +257,9 @@ class ShlokaViewSet(viewsets.ModelViewSet):
         """Play the audio file for the shloka."""
         shloka = self.get_object()
 
-        # Check if the audio file exists
         if not shloka.audio:
             return JsonResponse({"error": "No audio file available for this shloka."}, status=404)
 
-        # Serve the audio file
         audio_file_path = shloka.audio.path
         with open(audio_file_path, 'rb') as audio_file:
             response = HttpResponse(audio_file.read(), content_type='audio/mpeg')

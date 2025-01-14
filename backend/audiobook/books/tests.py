@@ -36,6 +36,6 @@ from django.http import JsonResponse
 from .models import Book
 
 def get_books(request):
-    books = Book.objects.all()  # Fetch all books
-    data = list(books.values('book_number', 'book_name'))  # Convert to a list of dictionaries
+    books = Book.objects.all()  
+    data = list(books.values('book_number', 'book_name'))  
     return JsonResponse(data, safe=False)

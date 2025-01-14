@@ -8,11 +8,9 @@ from .views import (
     SectionViewSet, ShlokaViewSet,RegisterView,MyTokenObtainPairView,UserProfileView
 )
 
-# Main router for books
 router = DefaultRouter()
 router.register(r'books', BookViewSet)
 
-# Nested router for chapters under books
 book_router = NestedDefaultRouter(router, r'books', lookup='book')
 book_router.register(r'chapters', ChapterViewSet, basename='book-chapters')
 
@@ -47,12 +45,10 @@ urlpatterns = [
     path('book/<int:book_pk>/chapter/<int:chapter_pk>/section/<int:pk>/shloka/', shloka_detail, name='shloka_detail'),
     path('book/<int:book_pk>/chapter/<int:chapter_pk>/shloka/', shloka_detail, name='shloka_detail'),
     
-    # API routes
     path('api/', include(router.urls)),
     path('api/', include(book_router.urls)),
-    path('api/', include(chapter_router.urls)),  # Include nested route
+    path('api/', include(chapter_router.urls)), 
     
-    # Update audio playback path to match naming conventions
 
     path(
         'api/books/<int:book_pk>/chapters/<int:chapter_pk>/sections/<int:section_pk>/shlokas/<int:pk>/play-audio/',

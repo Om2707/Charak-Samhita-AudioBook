@@ -105,7 +105,6 @@ class ShlokaAdmin(admin.ModelAdmin):
         return render(request, 'admin/upload_excel.html', {'form': form})
 
     def example_format(self, request):
-    # Create an example Excel file
         workbook = openpyxl.Workbook()
         sheet = workbook.active
         sheet.append(['shloka_number', 'shlok_text', 'audio', 'chapter_id'])

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
 import { redirectionKeywords } from './keywords';
@@ -13,12 +13,15 @@ const SearchBar = () => {
 
   const fuseOptions = {
     keys: ['name'],
-    threshold: 0.4, 
-    distance: 100, 
-    minMatchCharLength: 2 
+    threshold: 0.6,    
+    distance: 200,   
+    minMatchCharLength: 1,  
+    ignoreLocation: true,   
+    shouldSort: true,       
+    findAllMatches: true  
   };
   
-  const fuse = new Fuse(redirectionKeywords, fuseOptions);
+  const fuse = useMemo(() => new Fuse(redirectionKeywords, fuseOptions), []);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -29,7 +32,7 @@ const SearchBar = () => {
 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.interimResults = true;  
     recognition.lang = 'en-US';
 
     recognition.onstart = () => {
@@ -38,9 +41,15 @@ const SearchBar = () => {
     };
 
     recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
+      const transcript = Array.from(event.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('');
+      
       setSearchQuery(transcript);
-      handleVoiceSearch(transcript);
+      if (event.results[0].isFinal) {
+        handleVoiceSearch(transcript);
+      }
     };
 
     recognition.onerror = (event) => {
@@ -67,14 +76,16 @@ const SearchBar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const performSearch = (query) => {
-    if (query.trim()) {
-      const results = fuse.search(query);
-      setSuggestions(results.map(result => result.item));
-    } else {
-      setSuggestions([]);
-    }
-  };
+  const performSearch = useMemo(() => {
+    return (query) => {
+      if (query.trim()) {
+        const results = fuse.search(query);
+        setSuggestions(results.map(result => result.item));
+      } else {
+        setSuggestions([]);
+      }
+    };
+  }, [fuse]);
 
   const handleSearchQueryChange = (e) => {
     const query = e.target.value;
@@ -103,10 +114,10 @@ const SearchBar = () => {
       setTimeout(() => {
         navigate(bestMatch.path);
         setSearchQuery('');
-      }, 1000);
+      }, 500); 
     } else {
       setSearchQuery('No results found');
-      setTimeout(() => setSearchQuery(''), 2000);
+      setTimeout(() => setSearchQuery(''), 1500); 
     }
   };
 

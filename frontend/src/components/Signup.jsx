@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useState } from "react";
 import axios from "axios";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const schema = z
   .object({
@@ -20,6 +21,9 @@ const schema = z
 function Signup() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -42,27 +46,31 @@ function Signup() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      {/* Left Illustration Section */}
       <div className="flex-1 flex items-center justify-center bg-white">
         <img src="/login.jpg" alt="Ayurvedic Audiobook Illustration" className="h-full w-full object-fill" />
       </div>
 
-      {/* Right Signup Form Section */}
       <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-r from-[#49a1ca] to-zinc-50 p-6 md:p-10">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
           <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center">
             Create your Account
           </h1>
 
-          {/* General Error Message */}
           {errorMessage.general && (
             <p className="text-red-500 text-sm text-center mb-4">{errorMessage.general}</p>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Username Input */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username
@@ -71,14 +79,13 @@ function Signup() {
                 id="username"
                 type="text"
                 {...register("username")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
                 placeholder="Enter your username"
               />
               {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
               {errorMessage.username && <p className="text-red-500 text-xs mt-1">{errorMessage.username[0]}</p>}
             </div>
 
-            {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
@@ -87,44 +94,67 @@ function Signup() {
                 id="email"
                 type="email"
                 {...register("email")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
                 placeholder="Enter your Email"
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
               {errorMessage.email && <p className="text-red-500 text-xs mt-1">{errorMessage.email[0]}</p>}
             </div>
 
-            {/* Password Input */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                {...register("password")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
-                placeholder="Enter your Password"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  {...register("password")}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm pr-10"
+                  placeholder="Enter your Password"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center mt-1 text-gray-600 hover:text-gray-800"
+                >
+                  {showPassword ? (
+                    <FaEye className="h-5 w-5" />
+                  ) : (
+                    <FaEyeSlash className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
             </div>
 
-            {/* Confirm Password Input */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                {...register("confirmPassword")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm"
-                placeholder="Confirm your Password"
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  {...register("confirmPassword")}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#49a1ca] focus:border-[#49a1ca] sm:text-sm pr-10"
+                  placeholder="Confirm your Password"
+                />
+                <button
+                  type="button"
+                  onClick={toggleConfirmPasswordVisibility}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center mt-1 text-gray-600 hover:text-gray-800"
+                >
+                  {showConfirmPassword ? (
+                    <FaEye className="h-5 w-5" />
+                  ) : (
+                    <FaEyeSlash className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
               {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
             </div>
 
-            {/* Submit Button */}
             <div>
               <button
                 type="submit"
@@ -134,8 +164,6 @@ function Signup() {
               </button>
             </div>
           </form>
-
-          {/* Navigation to Sign In */}
           <div className="text-center mt-4">
             <p className="text-sm">
               Already have an account?{" "}

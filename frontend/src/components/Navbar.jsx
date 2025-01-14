@@ -3,11 +3,20 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Searchbar from './Searchbar';
-import { redirectionKeywords } from './keywords';
+
+const booksKeywords = [
+  { name: 'Sutrasthana', path: '/books/1/chapters', icon: 'fa-book' },
+  { name: 'Nidanasthana', path: '/books/2/chapters', icon: 'fa-book' },
+  { name: 'Vimanasthana', path: '/books/3/chapters', icon: 'fa-book' },
+  { name: 'Shareerasthana', path: '/books/4/chapters', icon: 'fa-book' },
+  { name: 'Chikitsasthana', path: '/books/5/chapters', icon: 'fa-book' },
+  { name: 'Indriyasthana', path: '/books/6/chapters', icon: 'fa-book' },
+  { name: 'Kalpasthana', path: '/books/7/chapters', icon: 'fa-book' },
+  { name: 'Siddhisthana', path: '/books/8/chapters', icon: 'fa-book' }
+];
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
@@ -31,12 +40,6 @@ const Navbar = () => {
       if (isSidebarOpen && !event.target.closest('#sidebar') && !event.target.closest('#sidebarToggle')) {
         setIsSidebarOpen(false);
       }
-      if (isDropdownOpen && !event.target.closest('#dropdown') && !event.target.closest('#dropdownToggle')) {
-        setIsDropdownOpen(false);
-      }
-      if (isMobileDropdownOpen && !event.target.closest('#mobileDropdown') && !event.target.closest('#mobileDropdownToggle')) {
-        setIsMobileDropdownOpen(false);
-      }
       if (isProfileOpen && !event.target.closest('#profileMenu') && !event.target.closest('#profileButton')) {
         setIsProfileOpen(false);
       }
@@ -44,10 +47,11 @@ const Navbar = () => {
 
     document.addEventListener('click', handleOutsideClick);
     return () => document.removeEventListener('click', handleOutsideClick);
-  }, [isSidebarOpen, isDropdownOpen, isMobileDropdownOpen, isProfileOpen]);
+  }, [isSidebarOpen, isProfileOpen]);
 
   const handleNavigation = (path) => {
     setIsSidebarOpen(false);
+    setIsMobileDropdownOpen(false);
     navigate(path);
   };
 
@@ -98,52 +102,71 @@ const Navbar = () => {
           </button>
         </div>
       </header>
-
       <div
         id="sidebar"
-        className={`fixed top-0 left-0 h-full w-64 md:w-72 bg-blue-500 text-white transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} z-50 ease-in-out duration-300`}
-        style={{ height: '100vh' }}
+        className={`fixed top-0 left-0 h-full w-64 md:w-72 bg-blue-500 text-white transition-transform transform ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } z-50 ease-in-out duration-300`}
       >
-        <div className="p-6">
-          <div className="text-3xl font-semibold mb-4">Menu</div>
-          <ul>
-            <li className="py-2 sm:py-1">
-              <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/')}>Home</button>
-            </li>
-            <li className="py-2 sm:py-1">
-              <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/profile')}>Profile</button>
-            </li>
-            <li className="py-2 sm:py-1" id="mobileDropdownToggle">
-              <div
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
-              >
-                <span className="text-lg sm:text-sm">Books</span>
-                <i className={`fas fa-chevron-${isMobileDropdownOpen ? 'up' : 'down'} ml-2`}></i>
-              </div>
-              {isMobileDropdownOpen && (
-                <ul id="mobileDropdown" className="ml-4 mt-2 space-y-1">
-                  {redirectionKeywords.slice(0, 8).map((item) => (
-                    <li key={item.path} className="py-2 sm:py-1">
-                      <Link
-                        to={item.path}
-                        className="text-lg sm:text-sm"
-                        onClick={() => handleNavigation(item.path)}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-            <li className="py-2 sm:py-1">
-              <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/about')}>About Us</button>
-            </li>
-            <li className="py-2 sm:py-1">
-              <button className="text-lg sm:text-sm" onClick={() => handleNavigation('/contact')}>Contact</button>
-            </li>
-          </ul>
+        <div className="p-6 flex flex-col h-full">
+          <div className="flex justify-between items-center mb-8">
+            <div className="text-2xl font-semibold">Menu</div>
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="text-white hover:text-gray-200"
+            >
+              <i className="fas fa-times text-2xl"></i>
+            </button>
+          </div>
+          <nav className="flex-grow">
+            <ul className="space-y-4">
+              <li>
+                <button 
+                  className="w-full text-left px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                  onClick={() => handleNavigation('/home')}
+                >
+                  <i className="fas fa-home mr-3"></i>
+                  Home
+                </button>
+              </li>
+
+              <li>
+                <button
+                  className="w-full text-left px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                  onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
+                >
+                  <i className="fas fa-book mr-3"></i>
+                  Books
+                  <i className={`fas fa-chevron-${isMobileDropdownOpen ? 'up' : 'down'} ml-2 float-right mt-1`}></i>
+                </button>
+                
+                {isMobileDropdownOpen && (
+                  <ul className="mt-2 ml-6 space-y-2">
+                    {booksKeywords.map((book) => (
+                      <li key={book.path}>
+                        <button
+                          className="w-full text-left px-2 py-1 text-gray-100 hover:text-white hover:bg-blue-600 rounded transition-colors duration-200"
+                          onClick={() => handleNavigation(book.path)}
+                        >
+                          {book.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            </ul>
+          </nav>
+
+          <div className="pt-4 border-t border-blue-400">
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-2 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
+            >
+              <i className="fas fa-sign-out-alt mr-3"></i>
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </>
