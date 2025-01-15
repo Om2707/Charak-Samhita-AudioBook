@@ -45,7 +45,6 @@ function Shlokas() {
   return (
     <div className="min-h-screen bg-no-repeat bg-cover">
       <Navbar />
-      {/* Banner Container */}
       <div className="px-4 mt-1 sm:mt-2">
   {chapter && (
     <div className="w-full">
@@ -59,8 +58,6 @@ function Shlokas() {
 
         )}
       </div>
-
-      {/* Shlokas Grid */}
       <div className="container mx-auto px-4 mt-3 sm:mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {shlokas.map((shloka) => (
@@ -82,7 +79,6 @@ function Shlokas() {
         </div>
       </div>
 
-      {/* Modal */}
       {selectedShloka && (
         <Modal
           shloka={selectedShloka}

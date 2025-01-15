@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useGetSectionByIdQuery, useGetSectionShlokasQuery } from "../services/sectionApi";
 import { usePlayAudioMutation } from "../services/shlokaApi";
@@ -13,39 +13,43 @@ function SectionShlokas() {
   const {
     data: section,
     isLoading: isLoadingSection,
-    error: sectionError
+    error: sectionError,
   } = useGetSectionByIdQuery({ bookId, chapterId, sectionId });
 
   const {
     data: shlokas = [],
     isLoading: isLoadingShlokas,
-    error: shlokasError
+    error: shlokasError,
   } = useGetSectionShlokasQuery({ bookId, chapterId, sectionId });
 
   const [playAudio] = usePlayAudioMutation();
 
-  const handlePlayAudio = async (shlokaId, e) => {
-    e.stopPropagation();
-    if (isPlaying) return;
+  const handlePlayAudio = useCallback(
+    async (shlokaId, e) => {
+      e.stopPropagation();
+      if (isPlaying) return;
 
-    try {
-      setIsPlaying(true);
-      const response = await playAudio({ bookId, chapterId, shlokaId }).unwrap();
-      const audioBlob = new Blob([response], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
+      try {
+        setIsPlaying(true);
+        const response = await playAudio({ bookId, chapterId, shlokaId }).unwrap();
+        const audioBlob = new Blob([response], { type: 'audio/mpeg/wav/aac/m4a' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
 
-      audio.onended = () => {
+        audio.onended = () => {
+          setIsPlaying(false);
+          URL.revokeObjectURL(audioUrl);
+        };
+
+        audio.play();
+      } catch (error) {
+        console.error("Error playing audio:", error);
         setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl);
-      };
-
-      audio.play();
-    } catch (error) {
-      console.error("Error playing audio:", error);
-      setIsPlaying(false);
-    }
-  };
+        alert("Failed to play audio. Please try again.");
+      }
+    },
+    [isPlaying, playAudio, bookId, chapterId]
+  );
 
   const openModal = (shloka) => {
     setSelectedShloka(shloka);
@@ -97,11 +101,13 @@ function SectionShlokas() {
               key={shloka.id}
               onClick={() => openModal(shloka)}
               className="bg-white shadow-lg rounded-lg p-4 cursor-pointer 
-                       transform transition duration-200 hover:scale-105 
-                       hover:shadow-xl border border-gray-100"
+                         transform transition duration-200 hover:scale-105 
+                         hover:shadow-xl border border-gray-100"
+              role="button"
+              aria-label={`Open details for Shloka ${shloka.shloka_number}`}
             >
               <p
-               style={{ fontFamily: "'playfair', serif" }}
+                style={{ fontFamily: "'playfair', serif" }}
                 className="text-center text-lg md:text-xl tracking-wide leading-relaxed"
               >
                 Shloka {shloka.shloka_number}

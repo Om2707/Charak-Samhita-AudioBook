@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Searchbar from './Searchbar';
 

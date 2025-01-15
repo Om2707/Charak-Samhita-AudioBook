@@ -13,8 +13,8 @@ const Modal = ({ shloka, bookId, chapterId, sectionId, onClose }) => {
   const modalRef = useRef(null);
 
   const audioApiUrl = sectionId
-    ? `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas/${shloka.id}/play-audio/`
-    : `http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}/play-audio/`;
+    ? `${import.meta.env.VITE_API_BASE_URL}/books/${bookId}/chapters/${chapterId}/sections/${sectionId}/shlokas/${shloka.id}/play-audio/`
+    : `${import.meta.env.VITE_API_BASE_URL}/books/${bookId}/chapters/${chapterId}/shlokas/${shloka.id}/play-audio/`;
 
   useEffect(() => {
     const fetchAudio = async () => {

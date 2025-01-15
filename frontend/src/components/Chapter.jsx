@@ -3,6 +3,8 @@ import { useGetBooksQuery } from "../services/booksApi";
 import { useGetChaptersQuery } from "../services/chapterApi";
 import Navbar from "./Navbar";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function Chapter() {
   const { bookId } = useParams();
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ function Chapter() {
 
   const handleChapterClick = async (chapterId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/books/${bookId}/chapters/${chapterId}/sections/`);
+      const response = await fetch(`${API_BASE_URL}/books/${bookId}/chapters/${chapterId}/sections/`);
       const sectionsData = await response.json();
       if (sectionsData.length > 0) {
         navigate(`/books/${bookId}/chapters/${chapterId}/sections`);
@@ -24,7 +26,6 @@ function Chapter() {
       console.error("Error fetching sections:", error);
     }
   };
-  
 
   if (isLoading || book_isLoading) {
     return (
